@@ -5,6 +5,7 @@ class MidiGate
     @held_notes    = {}
     @gate_notes    = {}
     @playing_notes = {}
+    @playing_notes_gate_count = Array.new(127, 0)
   end
 
   def note(pitch, velocity)
@@ -33,7 +34,9 @@ class MidiGate
 
   def reset
     @held_notes.clear
+    @gate_notes.clear
     @playing_notes.clear
+    @playing_notes_gate_count.fill(0)
   end
 
 
@@ -41,9 +44,22 @@ class MidiGate
   private
 
   def play(pitch, velocity, gate_velocity)
-    vel = velocity*gate_velocity/127 # this note's velocity is scaled by the gate velocity, which automatically takes care of note-offs
-    update_note_state(@playing_notes, pitch, vel)
-    @output.call(pitch, vel)
+     # this note's velocity is scaled by the gate velocity, which automatically takes care of note-offs
+    scaled_velocity = velocity*gate_velocity/127
+    note_on = scaled_velocity > 0
+    playing = @playing_notes.include? pitch
+    update_state = false
+    if note_on
+      @playing_notes_gate_count[pitch] += 1
+      update_state = (not playing) # only send a note on if not already playing
+    else
+      count = @playing_notes_gate_count[pitch] -= 1
+      update_state = (count == 0)
+    end
+    if update_state
+      update_note_state(@playing_notes, pitch, scaled_velocity)
+      @output.call(pitch, scaled_velocity)
+    end
   end
 
   def update_note_state(collection, pitch, velocity)
