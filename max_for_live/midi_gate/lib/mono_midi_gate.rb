@@ -1,4 +1,4 @@
-class MidiGate
+class MonoMidiGate
 
   def initialize(&output)
     @output        = output

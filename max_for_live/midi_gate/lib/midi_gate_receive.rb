@@ -1,8 +1,8 @@
-require 'midi_gate'
+require 'mono_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
-@gate = MidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 
 # Handle notes on this track, which won't play unless the gate allows it
 def in0( pitch, velocity )

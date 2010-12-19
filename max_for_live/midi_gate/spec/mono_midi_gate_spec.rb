@@ -1,15 +1,19 @@
 require 'spec_helper'
 
-describe MidiGate do
+describe MonoMidiGate do
 
   let(:output) { Array.new }
   let(:note_on) { [60, 100] }
   let(:note_off) { [60, 0] }
+  let(:third_on) { [62, 100] }
+  let(:third_off) { [62, 0] }
+  let(:fifth_on) { [64, 100] }
+  let(:fifth_off) { [64, 0] }
   let(:gate_on) { [0, 127] }
   let(:gate_off) { [0, 0] }
   let(:second_gate_on) { [1, 127] }
   let(:second_gate_off) { [1, 0] }
-  subject { MidiGate.new { |*args| output << args } }
+  subject { MonoMidiGate.new { |*args| output << args } }
 
   it "should play a note when I hold a note, then turn on the gate" do
     subject.note *note_on
@@ -93,6 +97,46 @@ describe MidiGate do
     subject.gate *second_gate_on
     subject.gate *second_gate_off
     output.should == [note_on, note_off]    
+  end
+
+  it "should play all notes in a held chord when turning on the gate" do
+    subject.note *note_on
+    subject.note *third_on
+    subject.note *fifth_on
+    subject.gate *gate_on
+    output.should =~ [note_on,third_on,fifth_on]
+  end
+
+  it "should play each note when playing a chord while the gate is turned on" do
+    subject.gate *gate_on
+    subject.note *note_on
+    subject.note *third_on
+    subject.note *fifth_on
+    output.should == [note_on,third_on,fifth_on]    
+  end
+
+  it "should stop playing all notes in a held chord when turning on the gate" do
+    subject.note *note_on
+    subject.note *third_on
+    subject.note *fifth_on
+    subject.gate *gate_on
+    output.clear
+
+    subject.gate *gate_off
+    output.should =~ [note_off,third_off,fifth_off]
+  end
+
+  it "should stop playing each note in a chord as they are released while the gate is turned on" do
+    subject.note *note_on
+    subject.note *third_on
+    subject.note *fifth_on
+    subject.gate *gate_on
+    output.clear
+
+    subject.note *note_off
+    subject.note *third_off
+    subject.note *fifth_off        
+    output.should == [note_off,third_off,fifth_off]
   end
 
 end

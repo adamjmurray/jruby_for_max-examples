@@ -1,1 +1,1 @@
-require 'midi_gate'
+require 'mono_midi_gate'
