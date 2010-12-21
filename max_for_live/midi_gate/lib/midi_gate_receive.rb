@@ -1,8 +1,13 @@
 require 'mono_midi_gate'
+require 'poly_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
-@gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@mgate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@pgate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+
+POLYPHONIC = 1
+@gate = @pgate
 
 # Handle notes on this track, which won't play unless the gate allows it
 def in0( pitch, velocity )
@@ -19,6 +24,17 @@ def in1( track_name )
   end
 rescue
   out1 $! 
+end
+
+def in2( mode )
+  case mode
+  when POLYPHONIC
+    @gate = @pgate
+    out1 'polyphonic'
+  else
+    @gate = @mgate
+    out1 'mono'
+  end
 end
 
 def reset
