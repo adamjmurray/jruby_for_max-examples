@@ -83,8 +83,8 @@ describe MonoMidiGate do
   end
 
   it "should scale the note velocity by the gate velocity" do
-    subject.note 60,100
-    subject.gate 0,50
+    subject.note 60, 100
+    subject.gate 0, 50
     output.should == [[60, 100*50/127]]
   end
 
@@ -96,7 +96,7 @@ describe MonoMidiGate do
     subject.note *note_on
     subject.gate *second_gate_on
     subject.gate *second_gate_off
-    output.should == [note_on, note_off]    
+    output.should == [note_on, note_off]
   end
 
   it "should play all notes in a held chord when turning on the gate" do
@@ -104,7 +104,7 @@ describe MonoMidiGate do
     subject.note *third_on
     subject.note *fifth_on
     subject.gate *gate_on
-    output.should =~ [note_on,third_on,fifth_on]
+    output.should =~ [note_on, third_on, fifth_on]
   end
 
   it "should play each note when playing a chord while the gate is turned on" do
@@ -112,7 +112,7 @@ describe MonoMidiGate do
     subject.note *note_on
     subject.note *third_on
     subject.note *fifth_on
-    output.should == [note_on,third_on,fifth_on]    
+    output.should == [note_on, third_on, fifth_on]
   end
 
   it "should stop playing all notes in a held chord when turning on the gate" do
@@ -123,7 +123,7 @@ describe MonoMidiGate do
     output.clear
 
     subject.gate *gate_off
-    output.should =~ [note_off,third_off,fifth_off]
+    output.should =~ [note_off, third_off, fifth_off]
   end
 
   it "should stop playing each note in a chord as they are released while the gate is turned on" do
@@ -135,8 +135,41 @@ describe MonoMidiGate do
 
     subject.note *note_off
     subject.note *third_off
-    subject.note *fifth_off        
-    output.should == [note_off,third_off,fifth_off]
+    subject.note *fifth_off
+    output.should == [note_off, third_off, fifth_off]
+  end
+
+  it "should not lose track of note on/off state" do
+    subject.note *note_on
+    subject.gate *gate_on
+    output.should == [note_on]
+    output.clear
+
+    subject.gate *gate_off
+    output.should == [note_off]
+    output.clear
+
+    subject.gate *gate_on
+    output.should == [note_on]
+    output.clear
+
+    subject.note *note_off
+    output.should == [note_off]
+    output.clear
+
+    subject.gate *gate_off
+    output.should == []
+
+    subject.note *note_on
+    output.should == []
+
+    subject.gate *gate_on
+    output.should == [note_on]
+    output.clear
+
+    subject.gate *gate_off
+    output.should == [note_off]
+    output.clear
   end
 
 end
