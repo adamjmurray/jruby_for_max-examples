@@ -32,7 +32,7 @@ class PolyMidiGate
       @output.call(pitch, 0)
     end
     @pitches.clear
-    @held_notes.clear
+    @notes.clear
     @gate_notes.clear
     @playing_notes.clear
     @triggered_by.clear
