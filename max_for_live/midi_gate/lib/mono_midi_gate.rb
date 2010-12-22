@@ -7,6 +7,8 @@ class MonoMidiGate
     @playing_notes = {}
     @playing_notes_gate_count = Array.new(127, 0)
   end
+  
+  attr_reader :playing_notes_gate_count
 
   def note(pitch, velocity)
     update_note_state(@held_notes, pitch, velocity)
@@ -18,9 +20,7 @@ class MonoMidiGate
 
     else #note off
       if @playing_notes[pitch]
-        # stop playing the note
-        @playing_notes.delete(pitch)
-        @output.call(pitch, 0)
+        play(pitch, 0, 0)
       end
     end
   end
