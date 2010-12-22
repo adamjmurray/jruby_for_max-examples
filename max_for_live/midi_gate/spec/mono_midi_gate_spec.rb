@@ -15,71 +15,112 @@ describe MonoMidiGate do
   let(:second_gate_off) { [1, 0] }
   subject { MonoMidiGate.new { |*args| output << args } }
 
+  def note(note_args)
+    subject.note *note_args
+  end
+
+  def gate(gate_args)
+    subject.gate *gate_args
+  end
+
   it "should play a note when I hold a note, then turn on the gate" do
-    subject.note *note_on
-    subject.gate *gate_on
+    note note_on
+    gate gate_on
     output.should == [note_on]
   end
 
   it "should play a note when I turn on the gate, then hold a note" do
-    subject.gate *gate_on
-    subject.note *note_on
+    gate gate_on
+    note note_on
     output.should == [note_on]
   end
 
   it "should end a note when I turn off the gate" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *gate_off
+    note note_on
+    gate gate_on
+    gate gate_off
     output.should == [note_on, note_off]
   end
 
   it "should end a note when I stop holding the note" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.note *note_off
+    note note_on
+    gate gate_on
+    note note_off
     output.should == [note_on, note_off]
   end
 
   it "should sustain a single note when I turn on the gate multiple times" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *gate_on
+    note note_on
+    gate gate_on
+    gate gate_on
     output.should == [note_on]
   end
 
   it "should not send a note off until the last gate off when I've turned on the gate multiple times (LIFO order)" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *second_gate_on
-    subject.gate *second_gate_off
+    note note_on
+    gate gate_on
+    gate second_gate_on
+    gate second_gate_off
     output.should == [note_on]
   end
 
   it "should not send a note off until the last gate off when I've turned on the gate multiple times (FIFO order)" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *second_gate_on
-    subject.gate *gate_off
+    note note_on
+    gate gate_on
+    gate second_gate_on
+    gate gate_off
     output.should == [note_on]
   end
 
   it "should send a note off at the last gate off when I've turned on the gate multiple times (LIFO order)" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *second_gate_on
-    subject.gate *second_gate_off
-    subject.gate *gate_off
+    note note_on
+    gate gate_on
+    gate second_gate_on
+    gate second_gate_off
+    gate gate_off
     output.should == [note_on, note_off]
   end
 
   it "should send a note off at the last gate off when I've turned on the gate multiple times (FIFO order)" do
-    subject.note *note_on
-    subject.gate *gate_on
-    subject.gate *second_gate_on
-    subject.gate *gate_off
-    subject.gate *second_gate_off
+    note note_on
+    gate gate_on
+    gate second_gate_on
+    gate gate_off
+    gate second_gate_off
     output.should == [note_on, note_off]
+  end
+
+  it "should not lose track of note on/off state" do
+    note note_on
+    gate gate_on
+    output.should == [note_on]
+    output.clear
+
+    gate gate_off
+    output.should == [note_off]
+    output.clear
+
+    gate gate_on
+    output.should == [note_on]
+    output.clear
+
+    note note_off
+    output.should == [note_off]
+    output.clear
+
+    gate gate_off
+    output.should == []
+
+    note note_on
+    output.should == []
+
+    gate gate_on
+    output.should == [note_on]
+    output.clear
+
+    gate gate_off
+    output.should == [note_off]
+    output.clear
   end
 
   it "should scale the note velocity by the gate velocity" do
@@ -89,87 +130,54 @@ describe MonoMidiGate do
   end
 
   it "should reset state when reset() is called" do
-    subject.note *note_on
-    subject.gate *gate_on
+    note note_on
+    gate gate_on
     output.clear
     subject.reset
-    subject.note *note_on
-    subject.gate *second_gate_on
-    subject.gate *second_gate_off
+    note note_on
+    gate second_gate_on
+    gate second_gate_off
     output.should == [note_on, note_off]
   end
 
   it "should play all notes in a held chord when turning on the gate" do
-    subject.note *note_on
-    subject.note *third_on
-    subject.note *fifth_on
-    subject.gate *gate_on
+    note note_on
+    note third_on
+    note fifth_on
+    gate gate_on
     output.should =~ [note_on, third_on, fifth_on]
   end
 
   it "should play each note when playing a chord while the gate is turned on" do
-    subject.gate *gate_on
-    subject.note *note_on
-    subject.note *third_on
-    subject.note *fifth_on
+    gate gate_on
+    note note_on
+    note third_on
+    note fifth_on
     output.should == [note_on, third_on, fifth_on]
   end
 
   it "should stop playing all notes in a held chord when turning on the gate" do
-    subject.note *note_on
-    subject.note *third_on
-    subject.note *fifth_on
-    subject.gate *gate_on
+    note note_on
+    note third_on
+    note fifth_on
+    gate gate_on
     output.clear
 
-    subject.gate *gate_off
+    gate gate_off
     output.should =~ [note_off, third_off, fifth_off]
   end
 
   it "should stop playing each note in a chord as they are released while the gate is turned on" do
-    subject.note *note_on
-    subject.note *third_on
-    subject.note *fifth_on
-    subject.gate *gate_on
+    note note_on
+    note third_on
+    note fifth_on
+    gate gate_on
     output.clear
 
-    subject.note *note_off
-    subject.note *third_off
-    subject.note *fifth_off
+    note note_off
+    note third_off
+    note fifth_off
     output.should == [note_off, third_off, fifth_off]
-  end
-
-  it "should not lose track of note on/off state" do
-    subject.note *note_on
-    subject.gate *gate_on
-    output.should == [note_on]
-    output.clear
-
-    subject.gate *gate_off
-    output.should == [note_off]
-    output.clear
-
-    subject.gate *gate_on
-    output.should == [note_on]
-    output.clear
-
-    subject.note *note_off
-    output.should == [note_off]
-    output.clear
-
-    subject.gate *gate_off
-    output.should == []
-
-    subject.note *note_on
-    output.should == []
-
-    subject.gate *gate_on
-    output.should == [note_on]
-    output.clear
-
-    subject.gate *gate_off
-    output.should == [note_off]
-    output.clear
   end
 
 end

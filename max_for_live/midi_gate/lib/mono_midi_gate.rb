@@ -7,8 +7,6 @@ class MonoMidiGate
     @playing_notes = {}
     @playing_notes_gate_count = Array.new(127, 0)
   end
-  
-  attr_reader :playing_notes_gate_count
 
   def note(pitch, velocity)
     update_note_state(@held_notes, pitch, velocity)
