@@ -30,6 +30,10 @@ class MonoMidiGate
     end
   end
 
+  def dump
+    "\nHELD_NOTES: #{@held_notes.inspect}\nGATE_NOTES: #{@gate_notes.inspect}\nPLAY_NOTES: #{@playing_notes.inspect}"
+  end
+
   def reset
     @held_notes.clear
     @gate_notes.clear

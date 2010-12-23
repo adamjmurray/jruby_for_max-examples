@@ -3,6 +3,28 @@ require 'poly_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
+# The following few lines of enhance Hash and Array to be threadsafe
+# this appears to be necessary when using the JRubyForMax send/receive system.
+require 'jruby/synchronized'
+class Hash
+  include JRuby::Synchronized
+end
+class Array
+  include JRuby::Synchronized
+end
+
+# TODO: figure out a way to log relative to this file
+#LOG = File.new("/Users/adam/tmp/jruby_for_max.log", 'w')
+#def log(msg)
+#  LOG.puts "#{ Thread.current.__id__ }   #{msg}"
+#  LOG.flush
+#end
+#
+#def out0(*params)
+#  outlet 0, *params
+#  log("OUTPUT: #{params.inspect}")
+#end
+
 @mgate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 @pgate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 
@@ -35,6 +57,7 @@ def in2( mode )
     @gate = @mgate
     out1 'mono'
   end
+  reset # TODO: 'panic' and send note outs?
 end
 
 def reset

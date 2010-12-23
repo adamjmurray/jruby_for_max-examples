@@ -23,6 +23,11 @@ describe MonoMidiGate do
     subject.gate *gate_args
   end
 
+  def should_output *expected_output
+    output.should =~ [*expected_output]
+    output.clear
+  end
+
   it "should play a note when I hold a note, then turn on the gate" do
     note note_on
     gate gate_on
@@ -144,6 +149,7 @@ describe MonoMidiGate do
     note note_on
     note third_on
     note fifth_on
+    output.should == []
     gate gate_on
     output.should =~ [note_on, third_on, fifth_on]
   end
@@ -156,7 +162,7 @@ describe MonoMidiGate do
     output.should == [note_on, third_on, fifth_on]
   end
 
-  it "should stop playing all notes in a held chord when turning on the gate" do
+  it "should stop playing all notes in a held chord when turning off the gate (notes on first)" do
     note note_on
     note third_on
     note fifth_on
@@ -166,6 +172,18 @@ describe MonoMidiGate do
     gate gate_off
     output.should =~ [note_off, third_off, fifth_off]
   end
+
+  it "should stop playing all notes in a held chord when turning off the gate (gate on first)" do
+    gate gate_on
+
+    note note_on
+      note third_on
+      note fifth_on
+      output.clear
+
+      gate gate_off
+      output.should =~ [note_off, third_off, fifth_off]
+    end
 
   it "should stop playing each note in a chord as they are released while the gate is turned on" do
     note note_on
@@ -178,6 +196,39 @@ describe MonoMidiGate do
     note third_off
     note fifth_off
     output.should == [note_off, third_off, fifth_off]
+  end
+
+  it "should handle polyphony" do
+    note note_on
+    note third_on
+    gate gate_on
+    should_output note_on, third_on
+
+    gate gate_off
+    should_output note_off, third_off
+
+    gate gate_on
+    should_output note_on, third_on
+
+    gate gate_off
+    should_output note_off, third_off
+
+    note fifth_on
+    note note_off
+    note third_off
+    gate gate_on
+    should_output fifth_on
+
+    gate gate_off
+    should_output fifth_off
+
+    note note_on
+    note third_on
+    gate gate_on
+    should_output note_on, third_on, fifth_on
+
+    gate gate_off
+    should_output note_off, third_off, fifth_off
   end
 
 end
