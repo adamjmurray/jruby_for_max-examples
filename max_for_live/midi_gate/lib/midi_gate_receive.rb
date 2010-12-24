@@ -49,7 +49,7 @@ def in1( track_name )
   channel = "midi_gate-#{track_name}"
   receive channel do |gate_pitch, gate_velocity|
 #    log("gate [#{gate_pitch},#{gate_velocity}]")
-    out1 gate_pitch,
+    out1 gate_pitch, gate_velocity
     @gate.gate(gate_pitch,gate_velocity)
 #    log(@gate.dump)
   end
