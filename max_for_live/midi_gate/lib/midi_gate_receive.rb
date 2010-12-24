@@ -19,19 +19,6 @@ include JRubyForMax::SendReceive
 @mgate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 @pgate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 
-# The following few lines of enhance Hash and Array to be threadsafe
-# this appears to be necessary when using the JRubyForMax send/receive system.
-require 'jruby/synchronized'
-@mgate.extend JRuby::Synchronized
-@pgate.extend JRuby::Synchronized
-# at first I tried the following, which might be more appropriate for a single script file, but the "real" work all happens via my gate object methods
-#class Hash
-#  include JRuby::Synchronized
-#end
-#class Array
-#  include JRuby::Synchronized
-#end
-
 
 POLYPHONIC = 1
 @gate = @pgate
