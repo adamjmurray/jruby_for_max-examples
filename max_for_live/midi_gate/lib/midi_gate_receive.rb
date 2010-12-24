@@ -3,15 +3,6 @@ require 'poly_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
-# The following few lines of enhance Hash and Array to be threadsafe
-# this appears to be necessary when using the JRubyForMax send/receive system.
-require 'jruby/synchronized'
-class Hash
-  include JRuby::Synchronized
-end
-class Array
-  include JRuby::Synchronized
-end
 
 # TODO: figure out a way to log relative to this file
 #LOG = File.new("/Users/adam/tmp/jruby_for_max.log", 'w')
@@ -28,12 +19,28 @@ end
 @mgate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 @pgate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 
+# The following few lines of enhance Hash and Array to be threadsafe
+# this appears to be necessary when using the JRubyForMax send/receive system.
+require 'jruby/synchronized'
+@mgate.extend JRuby::Synchronized
+@pgate.extend JRuby::Synchronized
+# at first I tried the following, which might be more appropriate for a single script file, but the "real" work all happens via my gate object methods
+#class Hash
+#  include JRuby::Synchronized
+#end
+#class Array
+#  include JRuby::Synchronized
+#end
+
+
 POLYPHONIC = 1
 @gate = @pgate
 
 # Handle notes on this track, which won't play unless the gate allows it
 def in0( pitch, velocity )
+#  log("note [#{pitch},#{velocity}]")
   @gate.note(pitch,velocity)
+#  log(@gate.dump)
 end
 
 # listen to events on the given track
@@ -41,8 +48,10 @@ def in1( track_name )
   unreceive # stop listening to previous track
   channel = "midi_gate-#{track_name}"
   receive channel do |gate_pitch, gate_velocity|
-    out1 gate_pitch, gate_velocity
+#    log("gate [#{gate_pitch},#{gate_velocity}]")
+    out1 gate_pitch,
     @gate.gate(gate_pitch,gate_velocity)
+#    log(@gate.dump)
   end
 rescue
   out1 $! 
