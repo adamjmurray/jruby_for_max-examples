@@ -1,75 +1,87 @@
 class MonoMidiGate
 
   def initialize(&output)
-    @output        = output
-    @held_notes    = {}
-    @gate_notes    = {}
+    @output = output
+    @notes = {}
+    @gate_notes = {}
     @playing_notes = {}
-    @playing_notes_gate_count = Array.new(127, 0)
   end
-  
-  attr_reader :playing_notes_gate_count
 
   def note(pitch, velocity)
-    update_note_state(@held_notes, pitch, velocity)
-
-    if velocity > 0 # note on
-      @gate_notes.each do |gate_pitch, gate_velocity|
-        play(pitch, velocity, gate_velocity)
-      end
-
-    else #note off
-      if @playing_notes[pitch]
-        play(pitch, 0, 0)
-      end
+    if velocity > 0
+      note_on(pitch, velocity)
+    else
+      note_off(pitch)
     end
   end
 
   def gate(gate_pitch, gate_velocity)
-    update_note_state(@gate_notes, gate_pitch, gate_velocity)
-    @held_notes.each do |pitch, velocity|
-      play(pitch, velocity, gate_velocity)
+    if gate_velocity > 0
+      gate_on(gate_pitch, gate_velocity)
+    else
+      gate_off(gate_pitch)
     end
   end
 
   def reset
-    @held_notes.clear
+    @notes.clear
     @gate_notes.clear
     @playing_notes.clear
-    @playing_notes_gate_count.fill(0)
   end
 
 
   ##############################################
   private
 
-  def play(pitch, velocity, gate_velocity)
-     # this note's velocity is scaled by the gate velocity, which automatically takes care of note-offs
-    scaled_velocity = velocity*gate_velocity/127
-    note_on = scaled_velocity > 0
-    playing = @playing_notes.include? pitch
-    update_state = false
-    if note_on
-      @playing_notes_gate_count[pitch] += 1
-      update_state = (not playing) # only send a note on if not already playing
-    else
-      count = @playing_notes_gate_count[pitch] -= 1
-      update_state = (count == 0)
+  def note_on(pitch, velocity)
+    if not @notes.include? pitch
+      @notes[pitch] = velocity
+      if not @gate_notes.empty?
+        play(pitch, velocity, *@gate_notes.first)
+      end
     end
-    if update_state
-      update_note_state(@playing_notes, pitch, scaled_velocity)
+  end
+
+  def note_off(pitch)
+    if @notes.delete(pitch)
+      stop_playing(pitch)
+    end
+  end
+
+  def gate_on(gate_pitch, gate_velocity)
+    if not @gate_notes.include? gate_pitch
+      was_empty = @gate_notes.empty?
+      @gate_notes[gate_pitch] = gate_velocity
+      if was_empty
+        for pitch,velocity in @notes
+          play(pitch, velocity, gate_pitch, gate_velocity)
+        end
+      end
+    end
+  end
+
+  def gate_off(gate_pitch)
+    if @gate_notes.delete(gate_pitch)
+      if @gate_notes.empty?
+        for pitch,_ in @notes
+          stop_playing(pitch, gate_pitch)
+        end
+      end
+    end
+  end
+
+  def play(pitch, velocity, gate_pitch, gate_velocity)
+    if not @playing_notes.include? pitch
+      scaled_velocity = velocity*gate_velocity/127
+      @playing_notes[pitch] = scaled_velocity      
       @output.call(pitch, scaled_velocity)
     end
   end
 
-  def update_note_state(collection, pitch, velocity)
-    if velocity > 0
-      # note on
-      collection[pitch] = velocity
-    else
-      # note off
-      collection.delete(pitch)
+  def stop_playing(pitch, gate_pitch=nil)
+    if @playing_notes.delete(pitch)
+      @output.call(pitch, 0)
     end
   end
-
+  
 end
