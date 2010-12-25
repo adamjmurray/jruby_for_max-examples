@@ -25,10 +25,9 @@ class PolyMidiGate < MonoMidiGate
       @pitches << pitch
       @pitches.sort
       pitch_index = @pitches.index(pitch)
-
-      @gate_notes.each do |gate_pitch, gate_velocity|
-        gate_index = gate_pitch % @pitches.size
-        if pitch_index == gate_index
+      for gate_pitch,gate_velocity in @gate_notes 
+        next if @triggered_by.include? gate_pitch # don't let the same gate turn on multiple notes
+        if pitch_index == gate_pitch % @pitches.size
           play(pitch, velocity, gate_pitch, gate_velocity)
           break
         end
@@ -37,9 +36,9 @@ class PolyMidiGate < MonoMidiGate
   end
 
   def note_off pitch
-    if @notes.delete pitch
+    if @notes.delete(pitch)
       @pitches.delete(pitch)
-      stop_playing pitch
+      stop_playing(pitch)
     end
   end
 
@@ -55,9 +54,9 @@ class PolyMidiGate < MonoMidiGate
   end
 
   def gate_off gate_pitch
-    if @gate_notes.delete gate_pitch
-      pitch = @triggered_by.delete gate_pitch
-      stop_playing pitch, gate_pitch if pitch
+    if @gate_notes.delete(gate_pitch)
+      pitch = @triggered_by.delete(gate_pitch)
+      stop_playing(pitch, gate_pitch) if pitch
     end
   end
 
@@ -70,9 +69,9 @@ class PolyMidiGate < MonoMidiGate
     end
   end
 
-  def stop_playing pitch, gate_pitch=nil
-    if @playing_notes.delete pitch
-      @triggered_by.delete gate_pitch
+  def stop_playing(pitch, gate_pitch=nil)
+    if @playing_notes.delete(pitch)
+      @triggered_by.delete(gate_pitch)
       @output.call(pitch, 0)
     end
   end
