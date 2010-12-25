@@ -53,7 +53,7 @@ def in2( mode )
     @gate = @mgate
     out1 'mono'
   end
-  reset # TODO: 'panic' and send note outs?
+  reset
 end
 
 def reset

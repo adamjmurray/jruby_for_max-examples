@@ -27,6 +27,11 @@ describe MonoMidiGate do
     output.should =~ [*expected_output]
     output.clear
   end
+  
+  def should_output_in_order *expected_output_sequence
+    output.should == [*expected_output_sequence]
+    output.clear
+  end
 
   it "should play a note when I hold a note, then turn on the gate" do
     note note_on
@@ -134,15 +139,26 @@ describe MonoMidiGate do
     output.should == [[60, 100*50/127]]
   end
 
+  it "should send note offs for all playing notes when reset() is called" do
+    note note_on
+    note third_on
+    gate gate_on
+    output.clear 
+       
+    subject.reset    
+    should_output note_off, third_off
+  end
+
   it "should reset state when reset() is called" do
     note note_on
     gate gate_on
-    output.clear
     subject.reset
-    note note_on
+    output.clear
+    
+    note third_on
     gate second_gate_on
     gate second_gate_off
-    output.should == [note_on, note_off]
+    should_output_in_order third_on, third_off
   end
 
   it "should play all notes in a held chord when turning on the gate" do

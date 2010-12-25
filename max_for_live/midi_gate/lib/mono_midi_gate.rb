@@ -28,6 +28,9 @@ class MonoMidiGate
   end
 
   def reset
+    for pitch,_ in @playing_notes
+      @output.call(pitch, 0)
+    end
     @notes.clear
     @gate_notes.clear
     @playing_notes.clear
