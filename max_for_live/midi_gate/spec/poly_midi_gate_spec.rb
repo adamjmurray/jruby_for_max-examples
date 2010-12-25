@@ -3,6 +3,7 @@ require 'spec_helper'
 describe PolyMidiGate do
 
   let(:output) { Array.new }
+  
   let(:root_on) { [60, 100] }
   let(:root_off) { [60, 0] }
   let(:third_on) { [62, 100] }
@@ -15,7 +16,15 @@ describe PolyMidiGate do
   let(:gate1_off) { [1, 0] }
   let(:gate2_on) { [2, 127] }
   let(:gate2_off) { [2, 0] }
+
+  let(:note_on)  { root_on }
+  let(:note_off) { root_off }
+  let(:gate_on)  { gate0_on }
+  let(:gate_off) { gate0_off }
+  
   subject { PolyMidiGate.new { |*args| output << args } }
+
+  it_should_behave_like "a midi gate"
 
   it "should argpeggiate a chord when I hold a chord, then turn the gates on" do
     subject.note *root_on

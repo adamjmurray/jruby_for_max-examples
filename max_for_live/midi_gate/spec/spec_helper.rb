@@ -1,5 +1,6 @@
 require 'mono_midi_gate'
 require 'poly_midi_gate'
+require 'gate_shared_examples'
 
 #
 # call note handler for the main track
@@ -29,4 +30,11 @@ end
 def should_output_in_order *expected_output
   output.should == [*expected_output]
   output.clear
+end
+
+#
+# verify that no output has occurred
+#
+def should_not_output 
+  output.should be_empty
 end
