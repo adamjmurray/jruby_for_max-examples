@@ -45,15 +45,16 @@ rescue
 end
 
 def in2( mode )
+  reset
   case mode
   when POLYPHONIC
     @gate = @pgate
-    out1 'polyphonic'
+    out1 'mode', 'polyphonic'
   else
     @gate = @mgate
-    out1 'mono'
+    out1 'mode', 'mono'
   end
-  reset
+  reset # just in case, we'll reset the new gate too
 end
 
 def reset
