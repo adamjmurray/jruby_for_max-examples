@@ -2,29 +2,29 @@
 
 shared_examples_for "a midi gate" do
   
-  it "should not play a n when a n is held, but the g is not turned on" do
+  it "should not play a note when a note is held, but the gate is not turned on" do
     n note_on
     should_not_output
   end
   
-  it "should not play a n when a g is turned on, but no n is held" do
+  it "should not play a note when a gate is turned on, but no note is held" do
     g gate_on
     should_not_output
   end
   
-  it "should play a n when I hold the note, then turn on the gate" do
+  it "should play a note when I hold the note, then turn on the gate" do
     n note_on
     g gate_on
     should_output note_on
   end
   
-  it "should play a n when I turn on the gate, then hold the note" do
+  it "should play a note when I turn on the gate, then hold the note" do
     g gate_on
     n note_on
     should_output note_on
   end
 
-  it "should end a n when I turn off the g (n on, then g on)" do
+  it "should end a note when I turn off the gate (note on, then gate on)" do
     n note_on
     g gate_on
     output.clear    
@@ -32,7 +32,7 @@ shared_examples_for "a midi gate" do
     should_output note_off
   end
   
-  it "should end a n when I turn off the g (g on, then n on)" do
+  it "should end a note when I turn off the gate (gate on, then note on)" do
     g gate_on
     n note_on
     output.clear    
@@ -40,7 +40,7 @@ shared_examples_for "a midi gate" do
     should_output note_off
   end
   
-  it "should end a n when I stop holding the n (n on, then g on)" do
+  it "should end a note when I stop holding the note (note on, then gate on)" do
     n note_on
     g gate_on
     output.clear    
@@ -48,7 +48,7 @@ shared_examples_for "a midi gate" do
     should_output note_off
   end
 
-  it "should end a n when I stop holding the n (g on, then n on)" do
+  it "should end a note when I stop holding the note (gate on, then note on)" do
     g gate_on
     n note_on
     output.clear    
@@ -56,20 +56,20 @@ shared_examples_for "a midi gate" do
     should_output note_off
   end
     
-  it "should sustain a single n when I turn on the g multiple times" do
+  it "should sustain a single note when I turn on the gate multiple times" do
     n note_on
     g gate_on
     g gate_on
     should_output note_on
   end
   
-  it "should scale the n velocity by the g velocity" do
+  it "should scale the note velocity by the gate velocity" do
     note [60, 100]
     gate [0, 50]
     should_output [60, 100*50/127]
   end
   
-  it "should send n offs for all playing notes when reset() is called" do
+  it "should send note offs for all playing notes when reset() is called" do
     n root_on
     n third_on
     g gate0_on

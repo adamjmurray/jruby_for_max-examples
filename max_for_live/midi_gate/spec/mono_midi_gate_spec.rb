@@ -27,113 +27,109 @@ describe MonoMidiGate do
 
   it_should_behave_like "a midi gate"
 
-  it "should not send a n off until the last g off when I've turned on the g multiple times (LIFO order)" do
+  it "should not send a note off until the last gate off when I've turned on multiple gates (LIFO order)" do
     n note_on
     g gate0_on
+    output.clear # assume a note_on
     g gate1_on
     g gate1_off
-    should_output note_on
+    should_not_output
   end
 
-  it "should not send a n off until the last g off when I've turned on the g multiple times (FIFO order)" do
+  it "should not send a note off until the last gate off when I've turned on multiple gates (FIFO order)" do
     n note_on
     g gate0_on
+    output.clear # assume a note_on
     g gate1_on
     g gate0_off
-    should_output note_on
+    should_not_output
   end
 
-  it "should send a n off at the last g off when I've turned on the g multiple times (LIFO order)" do
+  it "should send a note off at the last gate off when I've turned on multiple gates (LIFO order)" do
     n note_on
     g gate0_on
+    output.clear # assume a note_on
     g gate1_on
     g gate1_off
     g gate0_off
-    should_output_in_order note_on, note_off
+    should_output note_off
   end
 
-  it "should send a n off at the last g off when I've turned on the g multiple times (FIFO order)" do
+  it "should send a note off at the last gate off when I've turned on multiple gates (FIFO order)" do
     n note_on
     g gate0_on
+    output.clear # assume a note_on    
     g gate1_on
     g gate0_off
     g gate1_off
-    should_output_in_order note_on, note_off
+    should_output note_off
   end
 
-  it "should not lose track of n on/off state" do
+  it "should not lose track of note on/off state" do
     n note_on
     g gate_on
-    output.should == [note_on]
-    output.clear
+    should_output note_on
 
     g gate_off
-    output.should == [note_off]
-    output.clear
+    should_output note_off
 
     g gate_on
-    output.should == [note_on]
-    output.clear
+    should_output note_on
 
     n note_off
-    output.should == [note_off]
-    output.clear
-
+    should_output note_off
+    
     g gate_off
-    output.should == []
+    should_not_output
 
     n note_on
-    output.should == []
+    should_not_output
 
     g gate_on
-    output.should == [note_on]
-    output.clear
+    should_output note_on    
 
     g gate_off
-    output.should == [note_off]
-    output.clear
+    should_output note_off
   end
 
   it "should play all notes in a held chord when turning on the gate" do
     n note_on
     n third_on
     n fifth_on
-    output.should == []
+    should_not_output
     g gate_on
-    output.should =~ [note_on, third_on, fifth_on]
+    should_output note_on, third_on, fifth_on
   end
 
-  it "should play each n when playing a chord while the g is turned on" do
+  it "should play each note when playing a chord while the gate is turned on" do
     g gate_on
     n note_on
     n third_on
     n fifth_on
-    output.should == [note_on, third_on, fifth_on]
+    should_output_in_order note_on, third_on, fifth_on
   end
 
-  it "should stop playing all notes in a held chord when turning off the g (notes on first)" do
+  it "should stop playing all notes in a held chord when turning off the gate (notes on first)" do
     n note_on
     n third_on
     n fifth_on
     g gate_on
     output.clear
-
     g gate_off
-    output.should =~ [note_off, third_off, fifth_off]
+    should_output note_off, third_off, fifth_off
   end
 
-  it "should stop playing all notes in a held chord when turning off the g (g on first)" do
+  it "should stop playing all notes in a held chord when turning off the gate (gate on first)" do
     g gate_on
-
     n note_on
-      n third_on
-      n fifth_on
-      output.clear
-      g gate_off
-      should_output note_off, third_off, fifth_off
-    end
+    n third_on
+    n fifth_on
+    output.clear
+    g gate_off
+    should_output note_off, third_off, fifth_off
+  end
 
-  it "should stop playing each n in a chord as they are released while the g is turned on" do
+  it "should stop playing each note in a chord as they are released while the gate is turned on" do
     n note_on
     n third_on
     n fifth_on
