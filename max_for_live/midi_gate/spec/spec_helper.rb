@@ -8,6 +8,7 @@ require 'gate_shared_examples'
 def note(note_args)
   subject.note *note_args
 end
+alias n note
 
 #
 # call sidechain note handler for the gate track
@@ -15,6 +16,7 @@ end
 def gate(gate_args)
   subject.gate *gate_args
 end
+alias g gate
 
 #
 # verify output occurs in any order, then clear output for the next expectation

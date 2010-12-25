@@ -27,45 +27,44 @@ describe PolyMidiGate do
   it_should_behave_like "a midi gate"
 
   it "should argpeggiate a chord when I hold a chord, then turn the gates on" do
-    subject.note *root_on
-    subject.note *third_on
-    subject.note *fifth_on
-    subject.gate *gate0_on
-    output.should == [root_on]
+    n root_on
+    n third_on
+    n fifth_on
+    g gate0_on
+    should_output root_on
 
     output.clear
-    subject.gate *gate1_on
-    output.should == [third_on]
+    g gate1_on
+    should_output third_on
 
     output.clear
-    subject.gate *gate2_on
-    output.should == [fifth_on]
+    g gate2_on
+    should_output fifth_on
 
     output.clear
-    subject.gate *gate1_off
-    output.should == [third_off]
+    g gate1_off
+    should_output third_off
 
     output.clear
-    subject.gate *gate2_off
-    output.should == [fifth_off]
+    g gate2_off
+    should_output fifth_off
   end
 
   it "should play notes when I turn on multiple gates, then hold down notes" do
-    subject.gate *gate0_on
-    subject.gate *gate1_on
-    output.should == []
+    g gate0_on
+    g gate1_on
+    should_not_output
 
-    subject.note *root_on
-    output.should == [root_on]
-
-    output.clear
-    subject.note *third_on
-    output.should == [third_on]
+    n root_on
+    should_output root_on
 
     output.clear
-    subject.gate *gate0_off
-    output.should == [root_off]
+    n third_on
+    should_output third_on
 
+    output.clear
+    g gate0_off
+    should_output root_off
   end
 
 end
