@@ -15,24 +15,6 @@ describe MonoMidiGate do
   let(:second_gate_off) { [1, 0] }
   subject { MonoMidiGate.new { |*args| output << args } }
 
-  def note(note_args)
-    subject.note *note_args
-  end
-
-  def gate(gate_args)
-    subject.gate *gate_args
-  end
-
-  def should_output *expected_output
-    output.should =~ [*expected_output]
-    output.clear
-  end
-  
-  def should_output_in_order *expected_output_sequence
-    output.should == [*expected_output_sequence]
-    output.clear
-  end
-
   it "should play a note when I hold a note, then turn on the gate" do
     note note_on
     gate gate_on
