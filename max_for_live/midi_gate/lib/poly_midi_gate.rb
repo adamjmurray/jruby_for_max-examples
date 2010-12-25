@@ -1,40 +1,18 @@
 require 'mono_midi_gate'
 
-class PolyMidiGate
+# A gate where each sidechain note in the gate track can trigger at most
+# a single note in the main track.
+class PolyMidiGate < MonoMidiGate
 
   def initialize(&output)
-    @output = output
-    @pitches = []
-    @notes = {}
-    @gate_notes = {}
-    @playing_notes = {}
+    super
+    @pitches = []    
     @triggered_by = {}
   end
 
-  def note(pitch, velocity)
-    if velocity > 0
-      note_on pitch, velocity
-    else
-      note_off pitch
-    end
-  end
-
-  def gate(gate_pitch, gate_velocity)
-    if gate_velocity > 0
-      gate_on gate_pitch, gate_velocity
-    else
-      gate_off gate_pitch
-    end
-  end
-
   def reset
-    @playing_notes.each do |pitch, _|
-      @output.call(pitch, 0)
-    end
-    @pitches.clear
-    @notes.clear
-    @gate_notes.clear
-    @playing_notes.clear
+    super
+    @pitches.clear    
     @triggered_by.clear
   end
 
