@@ -1,5 +1,7 @@
+# A gate which plays all notes in the main track whenever any gate note is playing.
 class MonoMidiGate
 
+  # Create a new gate with 
   def initialize(&output)
     @output = output
     @notes = {}
@@ -7,6 +9,7 @@ class MonoMidiGate
     @playing_notes = {}
   end
 
+  # Handler for notes on the main track
   def note(pitch, velocity)
     if velocity > 0
       note_on(pitch, velocity)
@@ -15,6 +18,7 @@ class MonoMidiGate
     end
   end
 
+  # Handler for sidechain notes on the gate track 
   def gate(gate_pitch, gate_velocity)
     if gate_velocity > 0
       gate_on(gate_pitch, gate_velocity)
@@ -23,10 +27,7 @@ class MonoMidiGate
     end
   end
 
-  def dump
-    "\nNOTES: #{@notes.inspect}\nGATE_NOTES: #{@gate_notes.inspect}\nPLAYING_NOTES: #{@playing_notes.inspect}"
-  end
-
+  # Stop playing any currently playing notes and reset all internal state.
   def reset
     for pitch,_ in @playing_notes
       @output.call(pitch, 0)
@@ -34,6 +35,11 @@ class MonoMidiGate
     @notes.clear
     @gate_notes.clear
     @playing_notes.clear
+  end
+
+  # Details of internal state for debugging purposes.
+  def to_s
+    "#{self.class}{\n  @notes: #{@notes.inspect}\n  @gate_notes: #{@gate_notes.inspect}\n  @playing_notes: #{@playing_notes.inspect}\n}"
   end
 
 
