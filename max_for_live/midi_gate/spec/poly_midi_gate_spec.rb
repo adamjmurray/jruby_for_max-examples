@@ -22,9 +22,46 @@ describe PolyMidiGate do
   let(:gate_on)  { gate0_on }
   let(:gate_off) { gate0_off }
   
+  let(:root_gate_on)  { gate0_on }
+  let(:root_gate_off)  { gate0_off }
+  
   subject { PolyMidiGate.new { |*args| output << args } }
 
   it_should_behave_like "a midi gate"
+  
+  context "one gate, 2 notes" do    
+    context "gate on first" do
+      before(:each) do
+        g root_gate_on
+      end
+      it "should hold a matching note" do # how to explain the modular arithmetic logic succinctly?
+        n root_on
+        n third_on
+        should_output root_on
+      end
+      it "should change notes if the new note matches" do # how to explain the modular arithmetic logic succinctly?
+        n third_on        
+        n root_on
+        should_output_in_order third_on, third_off, root_on
+      end      
+    end
+  end
+  
+  context "repeated single gate" do
+    it "should turn one note on and off" do
+      n root_on
+      n third_on
+      n fifth_on
+      g gate_on
+      should_output root_on
+      g gate_off
+      should_output root_off
+      g gate_on
+      should_output root_on
+      g gate_off
+      should_output root_off
+    end    
+  end
 
   it "should argpeggiate a chord when I hold a chord, then turn the gates on" do
     n root_on
