@@ -39,13 +39,10 @@ POLYPHONIC = 1
 def in2( mode )
   LOCK.synchronize do
     @gate.reset
-    case mode
-    when POLYPHONIC
+    if mode == POLYPHONIC
       @gate = @poly_gate
-      out1 'mode', 'polyphonic'
     else
       @gate = @mono_gate
-      out1 'mode', 'mono'
     end
   end
 end
