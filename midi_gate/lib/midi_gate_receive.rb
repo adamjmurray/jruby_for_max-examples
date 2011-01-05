@@ -2,8 +2,6 @@ require 'mono_midi_gate'
 require 'poly_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
-require 'thread'
-LOCK = Mutex.new
 
 @mono_gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 @poly_gate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
@@ -13,37 +11,29 @@ LOCK = Mutex.new
 
 # Handle notes on this track, which won't play unless the gate allows it
 def in0( pitch, velocity )
-  LOCK.synchronize do  
-    @gate.note(pitch,velocity)
-  end
+  @gate.note(pitch,velocity)
 end
 
 
 # listen to events on the given track
 def in1( track_name )
-  LOCK.synchronize do
-    @gate.reset
-    unreceive # stop listening to previous track
-  end
+  @gate.reset
+  unreceive # stop listening to previous track
   channel = "midi_gate-#{track_name}"
   receive channel do |gate_pitch, gate_velocity|
     out1 'gate', gate_pitch, gate_velocity if @monitor
-    LOCK.synchronize do
-      @gate.gate(gate_pitch,gate_velocity)
-    end
+    @gate.gate(gate_pitch,gate_velocity)
   end
 end
 
 
 POLYPHONIC = 1
 def in2( mode )
-  LOCK.synchronize do
-    @gate.reset
-    if mode == POLYPHONIC
-      @gate = @poly_gate
-    else
-      @gate = @mono_gate
-    end
+  @gate.reset
+  if mode == POLYPHONIC
+    @gate = @poly_gate
+  else
+    @gate = @mono_gate
   end
 end
 
@@ -55,9 +45,7 @@ end
 
 
 def in4( _ )
-  LOCK.synchronize do
-    @gate.reset
-  end
+  @gate.reset
 end    
 
 
