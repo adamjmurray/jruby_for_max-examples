@@ -3,10 +3,10 @@ require 'poly_midi_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
-@mono_gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
-@poly_gate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@chord_gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@arp_gate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
 
-@gate = @poly_gate
+@gate = @arp_gate
 
 
 # Handle notes on this track, which won't play unless the gate allows it
@@ -21,19 +21,19 @@ def in1( track_name )
   unreceive # stop listening to previous track
   channel = "midi_gate-#{track_name}"
   receive channel do |gate_pitch, gate_velocity|
-    out1 'gate', gate_pitch, gate_velocity if @monitor
+    out1 gate_pitch, gate_velocity if @monitor
     @gate.gate(gate_pitch,gate_velocity)
   end
 end
 
 
-POLYPHONIC = 1
+ARP_MODE = 1
 def in2( mode )
   @gate.reset
-  if mode == POLYPHONIC
-    @gate = @poly_gate
+  if mode == ARP_MODE
+    @gate = @arp_gate
   else
-    @gate = @mono_gate
+    @gate = @chord_gate
   end
 end
 
@@ -49,7 +49,7 @@ def in4( _ )
 end    
 
 
-inlet_assist 'note in', 'sidechain track name', 'mono/poly mode', 'monitor', 'reset'
+inlet_assist 'note in', 'sidechain track name', 'chord/arp mode', 'monitor', 'reset'
 outlet_assist 'note out', 'monitor'
 
 
