@@ -1,5 +1,5 @@
-require 'mono_midi_gate'
-require 'poly_midi_gate'
+require 'arp_gate'
+require 'chord_gate'
 require 'gate_shared_examples'
 
 #

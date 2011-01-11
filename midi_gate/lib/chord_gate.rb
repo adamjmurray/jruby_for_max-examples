@@ -1,5 +1,5 @@
-# A gate which plays all notes in the main track whenever any gate note is playing.
-class MonoMidiGate
+# A gate which plays all notes in the main track (the full chord) whenever any gate note is playing.
+class ChordGate
 
   # Create a new gate with 
   def initialize(&output)

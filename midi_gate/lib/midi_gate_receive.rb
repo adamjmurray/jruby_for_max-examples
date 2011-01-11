@@ -1,10 +1,10 @@
-require 'mono_midi_gate'
-require 'poly_midi_gate'
+require 'chord_gate'
+require 'arp_gate'
 require 'jruby_for_max/send_receive'
 include JRubyForMax::SendReceive
 
-@chord_gate = MonoMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
-@arp_gate = PolyMidiGate.new{|pitch,velocity| out0(pitch,velocity) }
+@chord_gate = ChordGate.new{|pitch,velocity| out0(pitch,velocity) }
+@arp_gate = ArpGate.new{|pitch,velocity| out0(pitch,velocity) }
 
 @gate = @arp_gate
 

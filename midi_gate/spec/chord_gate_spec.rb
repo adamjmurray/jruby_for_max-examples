@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MonoMidiGate do
+describe ChordGate do
 
   let(:output) { Array.new }
   
@@ -22,7 +22,7 @@ describe MonoMidiGate do
   let(:gate_on)  { gate0_on }
   let(:gate_off) { gate0_off }
   
-  subject { MonoMidiGate.new { |*args| output << args } }
+  subject { ChordGate.new { |*args| output << args } }
 
 
   it_should_behave_like "a midi gate"

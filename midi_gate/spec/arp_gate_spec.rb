@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PolyMidiGate do
+describe ArpGate do
 
   let(:output) { Array.new }
   
@@ -25,7 +25,7 @@ describe PolyMidiGate do
   let(:root_gate_on)  { gate0_on }
   let(:root_gate_off)  { gate0_off }
   
-  subject { PolyMidiGate.new { |*args| output << args } }
+  subject { ArpGate.new { |*args| output << args } }
 
   it_should_behave_like "a midi gate"
   

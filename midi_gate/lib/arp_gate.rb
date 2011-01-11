@@ -1,16 +1,15 @@
-require 'mono_midi_gate'
+require 'chord_gate'
 
-class Hash
-  # For backward compatibility with Ruby 1.8
-  if not defined? key
-    alias key index
+if not Hash.instance_methods.include? 'key'
+  class Hash
+    alias key index  # For backward compatibility with Ruby 1.8  
   end
 end
 
 
-# A gate where each sidechain note in the gate track can trigger at most
-# a single note in the main track.
-class PolyMidiGate < MonoMidiGate
+# A gate where each sidechain note in the gate track can only trigger
+# a single note in the main track. Useful for arpeggiation.
+class ArpGate < ChordGate
 
   def initialize(&output)
     super
@@ -69,7 +68,7 @@ class PolyMidiGate < MonoMidiGate
     @gate_map = new_gate_map
   end
   
-  # This method controls the core "polyphonic" behavior that maps the sidechain gate pitches
+  # This method controls the arpeggiator-like behavior that maps the sidechain gate pitches
   # to the pitches in the current track.
   def recalculate_gate_map
     gate_map = {}
