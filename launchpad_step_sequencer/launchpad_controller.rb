@@ -8,7 +8,7 @@ class LaunchpadController
     
     # each pattern is an 8x8 matrix representing the launchpad grid, 
     # where each value in the matrix is a pair of [green brightness, red brightness] (brightness values are ints ranging from 0-3)
-    @patterns = Array.new(num_patterns) { Array.new(8) { Array.new(8,false) } }
+    @patterns = Array.new(num_patterns) { Array.new(8) { Array.new(8,0) } }
     @launchpad.all_off
     select_pattern 0
   end
@@ -18,12 +18,16 @@ class LaunchpadController
     @selected_pattern_index = index
     @selected_pattern = @patterns[index]    
     @launchpad.right prev_index,nil if prev_index    
-    @launchpad.right index,:r
+    @launchpad.right index,[3,3]
     display_pattern    
   end
 
-  def toggle_step x,y
-    @selected_pattern[x][y]= !@selected_pattern[x][y]
+  def get_step x,y
+    @selected_pattern[x][y]
+  end
+
+  def set_step x,y,value
+    @selected_pattern[x][y]= value
     display_step x,y
   end
   
@@ -52,9 +56,11 @@ class LaunchpadController
   
   def display_step x,y
     step_value = @selected_pattern[x][y]
-    g,r = 0,0
-    if step_value # todo support different values
-      g += 2
+    g,r = case step_value
+      when 1 then [2,0]
+      when 2 then [1,1]
+      when 3 then [0,2]
+      else [0,0]
     end
     if @selected_step == [x,y]
       g += 1
