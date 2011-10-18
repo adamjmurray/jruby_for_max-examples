@@ -54,7 +54,16 @@ end
 
 def all_off
   @launchpad.all_off
+end
+
+
+# set all the lights on the launchpad hardware for the current state
+# used to undo the "all notes off" message automatically send by Ableton Live to all MIDI hardware
+def reset_lights
+  puts "reseting lights!"
+  @controller.select_pattern @controller.selected_pattern_index
 end 
+
 
 BUTTON_HOLD_RATE = 0.2 # every quarter second the button is held, the value increases
 
