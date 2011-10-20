@@ -1,11 +1,15 @@
-require 'launchpad_adapter'
-require 'launchpad_controller'
+$LOAD_PATH << File.join( File.dirname(__FILE__), 'vendor', 'json_pure' )
+require 'json'
+require 'lib/launchpad_adapter'
+require 'lib/launchpad_model'
+require 'lib/launchpad_controller'
 
-inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)'
-outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out'
+inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'model load'
+outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'model dump'
 
 @launchpad = LaunchpadAdapter.new lambda{|pitch,velocity| out0 pitch,velocity}, lambda{|number,value| out1 number,value}
-@controller = LaunchpadController.new @launchpad
+@model = LaunchpadModel.new
+@controller = LaunchpadController.new @launchpad, @model
 @pressed = {}
  
 def in0 *args # note on/off
@@ -60,17 +64,24 @@ end
 # set all the lights on the launchpad hardware for the current state
 # used to undo the "all notes off" message automatically send by Ableton Live to all MIDI hardware
 def reset_lights
-  puts "reseting lights!"
   @controller.select_pattern @controller.selected_pattern_index
 end 
 
+def dump
+  out3 @model.to_json
+end
 
-BUTTON_HOLD_RATE = 0.2 # every quarter second the button is held, the value increases
+def in3 json
+  @model.from_json json
+  @controller.select_pattern 0
+end
+
+BUTTON_HOLD_RATE = 0.25 # every quarter second the button is held, the value increases
 
 @bg_thread ||= Thread.new do
   begin
   loop do
-    sleep 0.1
+    sleep 0.05
     now = Time.new
     for key,val in @pressed
       x,y = *key
