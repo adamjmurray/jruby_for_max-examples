@@ -22,7 +22,7 @@ def in0 *args # note on/off
   if velocity > 0
     if x > 7
       @pressed.clear
-      @controller.select_pattern y
+      @controller.track = y
     else    
       value = @controller.get_step x,y
       if value == 0
@@ -38,19 +38,26 @@ def in0 *args # note on/off
   end
 end 
 
-def in1 *args # control change
+# control change (top row)
+def in1 *args 
   cc,val = *args  
   if val > 0
-    @controller.select_screen (cc-104)
+    index = cc-104
+    if index < 2 # only 2 screens so far
+      @controller.screen = index
+    elsif index > 3
+      @controller.mode = index-4
+    end
   end
 end
 
+# metro input in [bars, beats, units]
 def in2 *args
   bars,beats,units = *args
   # assume 4/4 with 1/16 note pulses
-  y = ((bars-1) %4)*2 + (beats-1)/2
-  x = ((beats-1)%2)*4 + units.round/120  
-  @controller.select_step(x,y).each_with_index do |step_value,pattern_index|
+  pulse_index = (bars-1)*16 + (beats-1)*4 + (units/120).round
+  step_values = @controller.pulse(pulse_index)
+  step_values.each_with_index do |step_value,pattern_index|
     # todo support multiple values
     if step_value > 0
       # step_value should range from 1-3

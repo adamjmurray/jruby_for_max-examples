@@ -10,7 +10,7 @@ class LaunchpadView
   end
   
   # light up a button on the right column, turning off any previously lit button
-  def radio_select_right_button index, color=[3,3]
+  def radio_select_right_button index, color=[3,0]
     if @active_right_button_index
       # turn off previously lit button
       @launchpad.right @active_right_button_index, nil
@@ -26,6 +26,16 @@ class LaunchpadView
     end
     @launchpad.top index, color
     @arrow_button_index = index        
+  end
+  
+  def radio_select_mode_button index, color=[0,3]
+    index += 4
+    if @mode_button_index
+      # turn off previously lit button
+      @launchpad.top @mode_button_index, nil
+    end
+    @launchpad.top index, color
+    @mode_button_index = index        
   end
 
   # update the 8x8 grid to display the state of the given pattern model object

@@ -21,9 +21,9 @@ class LaunchpadModel
     
     def color_at(x,y)      
       case @grid[y][x]
-        when 1 then [2,0]
+        when 1 then [0,2]
         when 2 then [1,1]
-        when 3 then [0,2]
+        when 3 then [2,0]
         else [0,0]
       end
     end
@@ -45,7 +45,7 @@ class LaunchpadModel
   
   def initialize
     @note_patterns = Array.new(8) { Pattern.new }  
-    @playback_patterns = Array.new(8) { Pattern.new }
+    @playback_patterns = Array.new(8) { Pattern.new(3) }
   end
   
   def to_json(*args)
