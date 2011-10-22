@@ -31,6 +31,7 @@ class LaunchpadController
       prev_x, prev_y = *prev_selected_step          
       @view.render_grid_button @selected_pattern, prev_x, prev_y
     end
+    @view.render_grid_button @selected_pattern, x, y, true
     step_values x,y    
   end
   
