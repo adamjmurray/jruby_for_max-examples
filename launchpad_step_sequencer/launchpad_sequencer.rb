@@ -40,7 +40,9 @@ end
 
 def in1 *args # control change
   cc,val = *args  
-  @launchpad.top (cc-104),(val > 0)
+  if val > 0
+    @controller.select_screen (cc-104)
+  end
 end
 
 def in2 *args

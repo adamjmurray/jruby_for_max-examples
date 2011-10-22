@@ -18,6 +18,15 @@ class LaunchpadView
     @launchpad.right index, color
     @active_right_button_index = index        
   end
+  
+  def radio_select_arrow_button index, color=[3,3]
+    if @arrow_button_index
+      # turn off previously lit button
+      @launchpad.top @arrow_button_index, nil
+    end
+    @launchpad.top index, color
+    @arrow_button_index = index        
+  end
 
   # update the 8x8 grid to display the state of the given pattern model object
   def render_grid pattern, selected_step
