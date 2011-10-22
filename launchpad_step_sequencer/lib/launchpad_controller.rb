@@ -2,20 +2,17 @@ class LaunchpadController
 
   attr_reader :model, :selected_pattern, :selected_pattern_index
   
-  def initialize launchpad_adapter, model
-    @launchpad = launchpad_adapter
+  def initialize model, view
     @model = model
-    @launchpad.all_off
+    @view = view
     select_pattern 0
   end  
   
   def select_pattern index
-    prev_index = @selected_pattern_index
     @selected_pattern_index = index
-    @selected_pattern = @model.patterns[index]    
-    @launchpad.right prev_index,nil if prev_index    
-    @launchpad.right index,[3,3]
-    display_pattern    
+    @selected_pattern = @model.note_patterns[index]    
+    @view.radio_select_right_button index
+    @view.render_grid @selected_pattern, @selected_step
   end
 
   def get_step x,y
@@ -24,41 +21,21 @@ class LaunchpadController
 
   def set_step x,y,value
     @selected_pattern[x,y]= value
-    display_step x,y
+    @view.render_grid_button @selected_pattern, x, y, @selected_step
   end
   
   def select_step x,y
-    prev_step = @selected_step     
+    prev_selected_step = @selected_step
     @selected_step = [x,y]
-    display_step *prev_step if prev_step
-    display_step x,y
+    if prev_selected_step
+      prev_x, prev_y = *prev_selected_step          
+      @view.render_grid_button @selected_pattern, prev_x, prev_y
+    end
     step_values x,y    
   end
   
   def step_values x,y
-    @model.patterns.collect{|pattern| pattern[x,y] }
+    @model.note_patterns.collect{|pattern| pattern[x,y] }
   end
-  
-  ####################################
-  protected
-  
-  def display_pattern
-    for y in 0..7
-      for x in 0..7      
-        display_step x,y
-      end
-    end
-  end
-  
-  def display_step x,y
-    g,r = *@selected_pattern.color_at(x,y)
-    if @selected_step == [x,y]
-      g += 1
-      r += 1
-    end  
-    @launchpad.grid x,y,[g,r]
-    #puts "#{x},#{y}: [#{g}/#{r}]"    
-  end 
-  
   
 end

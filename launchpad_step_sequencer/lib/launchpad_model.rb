@@ -3,10 +3,10 @@ class LaunchpadModel
   class Pattern
     attr_accessor :grid
     
-    def initialize(grid=nil)
+    def initialize(init_val=0)
       # each pattern is an 8x8 matrix representing the launchpad grid, 
       # where each value in the matrix is an int ranging from 0-3      
-      @grid = Array.new(8) { Array.new(8,0) }
+      @grid = Array.new(8) { Array.new(8,init_val) }
     end
     
     def [](x,y)
@@ -31,30 +31,32 @@ class LaunchpadModel
     def to_json(*args)
       @grid.to_json(*args)
     end
-
   end
 
-  attr_reader :patterns
+
+  # each note pattern is an 8x8 matrix representing the launchpad grid, 
+  # where each value in the matrix is an int ranging from 0-3
+  attr_reader :note_patterns
+
+  # playback patterns control whether the steps in the corresponding note pattern
+  # play normally, play a flam, are muted, or are skipped
+  attr_reader :playback_patterns
   
-  def initialize(num_patterns=8)
-    # each pattern is an 8x8 matrix representing the launchpad grid, 
-    # where each value in the matrix is an int ranging from 0-3
-    @patterns = Array.new(num_patterns) { Pattern.new }
+  
+  def initialize
+    @note_patterns = Array.new(8) { Pattern.new }  
+    @playback_patterns = Array.new(8) { Pattern.new }
   end
   
   def to_json(*args)
-    data = {patterns: @patterns}
+    data = {note_patterns: @note_patterns, playback_patterns: @playback_patterns}
     data.to_json(*args)
   end
   
   def from_json json
-    puts "Parsing #{json}"
     data = JSON.parse json, symbolize_names: true
-    p data
-    patterns = data[:patterns]
-    patterns.each_with_index do |grid,index|
-      @patterns[index].grid = grid
-    end      
+    data[:note_patterns].each_with_index{|grid,index| @note_patterns[index].grid = grid }
+    data[:playback_patterns].each_with_index{|grid,index| @playback_patterns[index].grid = grid }
   end
   
 end
