@@ -19,13 +19,17 @@ class LaunchpadModel
       @grid[y][x] = value
     end
     
-    def color_at(x,y)      
-      case @grid[y][x]
+    def self.color_for value
+      case value
         when 1 then [0,2]
-        when 2 then [1,1]
+        when 2 then [1,2]
         when 3 then [2,0]
         else [0,0]
       end
+    end
+    
+    def color_at(x,y)      
+      self.class.color_for @grid[y][x]
     end
     
     def to_json(*args)

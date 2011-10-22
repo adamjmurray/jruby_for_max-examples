@@ -12,7 +12,6 @@ outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer 
 @model = LaunchpadModel.new
 @view = LaunchpadView.new @launchpad
 @controller = LaunchpadController.new @model, @view
-@pressed = {}
  
 def in0 *args # note on/off
   note,velocity = *args
@@ -21,20 +20,12 @@ def in0 *args # note on/off
 
   if velocity > 0
     if x > 7
-      @pressed.clear
       @controller.track = y
-    else    
-      value = @controller.get_step x,y
-      if value == 0
-        @pressed[[x,y]] = [1,Time.new]
-        value = 1
-      else
-        value = 0
-      end
-      @controller.set_step x,y,value
+    else
+      @controller.step_pressed x,y
     end
   else
-    @pressed.delete [x,y]
+    @controller.step_released x,y
   end
 end 
 
@@ -86,36 +77,3 @@ def reset_lights
   @controller.select_pattern @controller.selected_pattern_index
 end 
 
-
-BUTTON_HOLD_RATE = 0.25 # every quarter second the button is held, the value increases
-
-@bg_thread ||= Thread.new do
-  begin
-  loop do
-    sleep 0.05
-    now = Time.new
-    for key,val in @pressed
-      x,y = *key
-      value,time = *val
-      value_increment = ((now - time) / BUTTON_HOLD_RATE).to_i
-      if value_increment > 0
-        value += value_increment
-        if value >= 3
-          value = 3
-          @pressed.delete [x,y]
-        else
-          @pressed[[x,y]] = [value,time + BUTTON_HOLD_RATE*value_increment]
-        end
-        @controller.set_step x,y,value
-      end
-    end
-  end
-  rescue
-    p $!
-  end  
-end
-
-at_exit do
-  @bg_thread.kill if @bg_thread
-  @bg_thread = nil
-end
