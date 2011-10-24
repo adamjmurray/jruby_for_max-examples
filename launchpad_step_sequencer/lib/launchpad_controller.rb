@@ -6,7 +6,7 @@ class LaunchpadController
     @model = model
     @view = view
     @track = 0
-    @button_timer = ButtonTimer.new self
+    @button_timer = LaunchpadButtonTimer.new self
     self.screen = 0
     self.mode = 3
   end
@@ -95,74 +95,4 @@ class LaunchpadController
     end
   end
   
-  
-  # timer logic for :timed mode
-  class ButtonTimer
-    BUTTON_HOLD_RATE = 0.33 # every third of a second the button is held, the value increases
-
-    def initialize controller
-      @controller = controller
-      @pressed = {}
-      @bg_thread ||= Thread.new do
-        begin
-        loop do
-          if @active
-            unless @pressed.empty?
-              now = Time.new
-              for key,val in @pressed
-                x,y = *key
-                value,time = *val
-                value_increment = ((now - time) / BUTTON_HOLD_RATE).to_i
-                if value_increment > 0
-                  value += value_increment
-                  if value >= 3
-                    value = 3
-                    @pressed.delete [x,y]
-                  else
-                    @pressed[[x,y]] = [value,time + BUTTON_HOLD_RATE*value_increment]
-                  end
-                  @controller.set_step x,y,value
-                end
-              end
-            end
-            sleep 0.05            
-          else
-            sleep 0.5
-          end
-        end
-        rescue
-          p $!
-        end  
-      end
-      
-      at_exit do
-        @bg_thread.kill if @bg_thread
-        @bg_thread = nil
-      end
-    end
-    
-    def active= active
-      @active = active
-      clear if not active
-    end
-    
-    def step_pressed x,y
-      value = @controller.get_step x,y
-      if value == 0
-        @pressed[[x,y]] = [1,Time.new]
-        value = 1
-      else
-        value = 0
-      end
-      @controller.set_step x,y,value      
-    end
-
-    def step_released x,y
-      @pressed.delete [x,y]
-    end
-    
-    def clear
-      @pressed.clear        
-    end
-  end
 end

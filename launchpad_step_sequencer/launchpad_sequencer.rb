@@ -1,4 +1,5 @@
 require 'lib/launchpad_adapter'
+require 'lib/launchpad_button_timer'
 require 'lib/launchpad_model'
 require 'lib/launchpad_view'
 require 'lib/launchpad_controller'
@@ -65,8 +66,9 @@ def in3 *data
 end
 
 def dump
+  preset_number = 1 # TODO: support different preset slots
   for param,value in @model.serialize
-    out3 param, 1, *value # middle arg 0 controls pattrstorage preset number (later there will be support for different presets)
+    out3 :setstoredvalue, param, preset_number, *value
   end
 end
 

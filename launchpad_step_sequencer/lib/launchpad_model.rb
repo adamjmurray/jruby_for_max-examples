@@ -21,9 +21,9 @@ class LaunchpadModel
     
     def self.color_for value
       case value
-        when 1 then [0,2]
+        when 1 then [2,0]
         when 2 then [1,2]
-        when 3 then [2,0]
+        when 3 then [0,2]
         else [0,0]
       end
     end
@@ -33,7 +33,12 @@ class LaunchpadModel
     end
   end
 
-
+  # definition of values for the playback grids
+  PLAYBACK_MUTE = 0
+  PLAYBACK_NORMAL = 1
+  PLAYBACK_FLAM = 2
+  PLAYBACK_SKIP = 3
+  
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3
   attr_reader :note_patterns
@@ -45,7 +50,7 @@ class LaunchpadModel
   
   def initialize
     @note_patterns = Array.new(8) { Pattern.new }  
-    @playback_patterns = Array.new(8) { Pattern.new(3) }
+    @playback_patterns = Array.new(8) { Pattern.new(PLAYBACK_NORMAL) }
   end
   
   def serialize(*args)
