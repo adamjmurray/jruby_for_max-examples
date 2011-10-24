@@ -31,10 +31,6 @@ class LaunchpadModel
     def color_at(x,y)      
       self.class.color_for @grid[y][x]
     end
-    
-    def to_json(*args)
-      @grid.to_json(*args)
-    end
   end
 
 
@@ -52,15 +48,15 @@ class LaunchpadModel
     @playback_patterns = Array.new(8) { Pattern.new(3) }
   end
   
-  def to_json(*args)
-    data = {note_patterns: @note_patterns, playback_patterns: @playback_patterns}
-    data.to_json(*args)
+  def serialize(*args)
+    @note_patterns.map{|pattern| pattern.grid }.flatten + @playback_patterns.map{|pattern| pattern.grid }.flatten
   end
   
-  def from_json json
-    data = JSON.parse json, symbolize_names: true
-    data[:note_patterns].each_with_index{|grid,index| @note_patterns[index].grid = grid }
-    data[:playback_patterns].each_with_index{|grid,index| @playback_patterns[index].grid = grid }
+  def deserialize data
+    arrays = data.each_slice(8).each_slice(8).each_slice(8).to_a
+    note_arrays,playback_arrays = *arrays    
+    note_arrays.each_with_index{|grid,index| @note_patterns[index].grid = grid }
+    playback_arrays.each_with_index{|grid,index| @playback_patterns[index].grid = grid }
   end
   
 end

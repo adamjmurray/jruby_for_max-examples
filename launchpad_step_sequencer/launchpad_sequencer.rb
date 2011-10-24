@@ -1,5 +1,3 @@
-$LOAD_PATH << File.join( File.dirname(__FILE__), 'vendor', 'json_pure' )
-require 'json'
 require 'lib/launchpad_adapter'
 require 'lib/launchpad_model'
 require 'lib/launchpad_view'
@@ -41,7 +39,7 @@ def in1 *args
     end
   end
 end
-
+ 
 # metro input in [bars, beats, units]
 def in2 *args
   bars,beats,units = *args
@@ -55,16 +53,16 @@ def in2 *args
       velocity = 127 - (3-step_value)*40
       out2 pattern_index,velocity
     end  
-  end
+  end 
 end
 
-def in3 json
-  @model.from_json json
-  @controller.select_pattern 0
+def in3 *data
+  @model.deserialize data
+  @controller.screen = 0  
 end
 
 def dump
-  out3 @model.to_json
+  out3 @model.serialize
 end
 
 def all_off
