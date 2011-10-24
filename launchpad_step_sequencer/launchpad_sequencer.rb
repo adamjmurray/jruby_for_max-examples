@@ -38,7 +38,7 @@ def in1 *args
       @controller.mode = index-4
     end
   end
-end
+end 
  
 # metro input in [bars, beats, units]
 def in2 *args
@@ -57,12 +57,17 @@ def in2 *args
 end
 
 def in3 *data
-  @model.deserialize data
-  @controller.screen = 0  
+  if data.first == 'dump' # dump of all values is done
+    @controller.screen = 0   
+  else    
+    @model.deserialize data
+  end
 end
 
 def dump
-  out3 @model.serialize
+  for param,value in @model.serialize
+    out3 param, 1, *value # middle arg 0 controls pattrstorage preset number (later there will be support for different presets)
+  end
 end
 
 def all_off
