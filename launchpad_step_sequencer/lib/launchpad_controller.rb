@@ -84,19 +84,25 @@ class LaunchpadController
   end
   
   def pulse pulse_index
-    x = pulse_index % 8
-    y = (pulse_index / 8) % 8
-    select_step x,y
-    @patterns.each_with_index do |pattern,index| 
-      note_value = @model.note_patterns[index][x,y]
+    for track in 0..7
+      playback = @model.playback_patterns[track]
+      playback_length = playback.length
+      
+      # TODO: this approach is too simplistic, and buggy
+      # It doesn't index the active note correctly, it simply truncase from the end of the note grid.
+      step = pulse_index % playback_length      
+      
+      x = step % 8
+      y = (step / 8) % 8        
+      select_step x,y if track == @track
+            
+      note_value = @model.note_patterns[track][x,y]
       if note_value > 0
-        pitch = index
+        pitch = track
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
-        playback_value = @model.playback_patterns[index][x,y]  
-        case playback_value
+        case playback[x,y]  
           when LaunchpadModel::PLAYBACK_NORMAL then note_out pitch,velocity            
           when LaunchpadModel::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
-          when LaunchpadModel::PLAYBACK_SKIP  then :TODO
         end
       end      
     end

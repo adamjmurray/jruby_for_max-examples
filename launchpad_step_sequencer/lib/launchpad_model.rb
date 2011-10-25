@@ -3,10 +3,10 @@ class LaunchpadModel
   class Pattern
     attr_accessor :grid
     
-    def initialize(init_val=0)
+    def initialize
       # each pattern is an 8x8 matrix representing the launchpad grid, 
       # where each value in the matrix is an int ranging from 0-3      
-      @grid = Array.new(8) { Array.new(8,init_val) }
+      @grid = Array.new(8) { Array.new(8,0) }
     end
     
     def [](x,y)
@@ -32,12 +32,48 @@ class LaunchpadModel
       self.class.color_for @grid[y][x]
     end
   end
-
+  
+  
   # definition of values for the playback grids
   PLAYBACK_MUTE = 0
   PLAYBACK_NORMAL = 1
   PLAYBACK_FLAM = 2
   PLAYBACK_SKIP = 3
+  
+  class PlaybackPattern < Pattern
+
+    attr_reader :length
+    
+    SKIP = LaunchpadModel::PLAYBACK_SKIP
+    
+    def initialize
+      @grid = Array.new(8) { Array.new(8,1) }
+      @length = 64
+    end
+    
+    def grid= grid
+      @grid = grid
+      length = 0
+      for value in grid.flatten
+        length += 1 if value != SKIP
+      end
+      @length = length
+      grid
+    end
+    
+    def []=(x,y,value)
+      prev_value = self[x,y]
+      if prev_value != value
+        super
+        if value == SKIP
+          @length -= 1
+        elsif prev_value == SKIP
+          @length += 1        
+        end
+      end
+    end
+  end
+
   
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3
@@ -50,7 +86,7 @@ class LaunchpadModel
   
   def initialize
     @note_patterns = Array.new(8) { Pattern.new }  
-    @playback_patterns = Array.new(8) { Pattern.new(PLAYBACK_NORMAL) }
+    @playback_patterns = Array.new(8) { PlaybackPattern.new }
   end
   
   def serialize(*args)

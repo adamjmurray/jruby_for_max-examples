@@ -61,7 +61,7 @@ end
 def dump
   preset_number = 1 # TODO: support different preset slots
   for param,value in @model.serialize
-    out3 :setstoredvalue, param, preset_number, *value
+    out3 'setstoredvalue', param, preset_number, *value
   end
 end
 
