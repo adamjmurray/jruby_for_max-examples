@@ -7,33 +7,34 @@ class LaunchpadButtonTimer
     @pressed = {}
     @bg_thread ||= Thread.new do
       begin
-      loop do
-        if @active
-          unless @pressed.empty?
-            now = Time.new
-            for key,val in @pressed
-              x,y = *key
-              value,time = *val
-              value_increment = ((now - time) / BUTTON_HOLD_RATE).to_i
-              if value_increment > 0
-                value += value_increment
-                if value >= 3
-                  value = 3
-                  @pressed.delete [x,y]
-                else
-                  @pressed[[x,y]] = [value,time + BUTTON_HOLD_RATE*value_increment]
+        loop do
+          if @active
+            unless @pressed.empty?
+              now = Time.new
+              for key,val in @pressed
+                x,y = *key
+                value,time = *val
+                value_increment = ((now - time) / BUTTON_HOLD_RATE).to_i
+                if value_increment > 0
+                  value += value_increment
+                  if value >= 3
+                    value = 3
+                    @pressed.delete [x,y]
+                  else
+                    @pressed[[x,y]] = [value,time + BUTTON_HOLD_RATE*value_increment]
+                  end
+                  @controller.set_step x,y,value
                 end
-                @controller.set_step x,y,value
               end
             end
+            sleep 0.05            
+          else
+            sleep 0.5
           end
-          sleep 0.05            
-        else
-          sleep 0.5
         end
-      end
-      rescue
-        p $!
+      rescue => e
+        error e.inspect
+        error e.backtrace
       end  
     end
     

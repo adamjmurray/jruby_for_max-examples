@@ -1,5 +1,6 @@
 require 'lib/launchpad_adapter'
 require 'lib/launchpad_button_timer'
+require 'lib/launchpad_flam_timer'
 require 'lib/launchpad_model'
 require 'lib/launchpad_view'
 require 'lib/launchpad_controller'
@@ -10,7 +11,7 @@ outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer 
 @launchpad = LaunchpadAdapter.new lambda{|pitch,velocity| out0 pitch,velocity}, lambda{|number,value| out1 number,value}
 @model = LaunchpadModel.new
 @view = LaunchpadView.new @launchpad
-@controller = LaunchpadController.new @model, @view
+@controller = LaunchpadController.new @model, @view, lambda{|pitch,velocity| out2 pitch,velocity}
  
 def in0 *args # note on/off
   note,velocity = *args
@@ -46,15 +47,7 @@ def in2 *args
   bars,beats,units = *args
   # assume 4/4 with 1/16 note pulses
   pulse_index = (bars-1)*16 + (beats-1)*4 + (units/120).round
-  step_values = @controller.pulse(pulse_index)
-  step_values.each_with_index do |step_value,pattern_index|
-    # todo support multiple values
-    if step_value > 0
-      # step_value should range from 1-3
-      velocity = 127 - (3-step_value)*40
-      out2 pattern_index,velocity
-    end  
-  end 
+  @controller.pulse(pulse_index)
 end
 
 def in3 *data

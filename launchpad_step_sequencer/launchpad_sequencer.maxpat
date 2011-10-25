@@ -28,6 +28,49 @@
 				"box" : 				{
 					"fontname" : "Arial",
 					"fontsize" : 12.0,
+					"id" : "obj-27",
+					"linecount" : 2,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 828.0, 136.0, 93.0, 32.0 ],
+					"text" : "getstoredvalue playback0 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"id" : "obj-17",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 850.0, 60.0, 75.0, 18.0 ],
+					"text" : "playback0 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"id" : "obj-7",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 804.0, 105.0, 137.0, 20.0 ],
+					"text" : "prepend getstoredvalue"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
 					"id" : "obj-65",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -98,20 +141,6 @@
 				"box" : 				{
 					"fontname" : "Arial",
 					"fontsize" : 12.0,
-					"id" : "obj-54",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 631.0, 154.0, 136.0, 20.0 ],
-					"text" : "prepend setstoredvalue"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Arial",
-					"fontsize" : 12.0,
 					"id" : "obj-53",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -145,8 +174,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 745.0, 518.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback7",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback7",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback7",
@@ -165,8 +220,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 665.0, 518.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes7",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes7",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes7",
@@ -185,8 +266,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 745.0, 487.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback6",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback6",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback6",
@@ -205,8 +312,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 665.0, 487.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes6",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes6",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes6",
@@ -225,8 +358,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 745.0, 454.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback5",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback5",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback5",
@@ -245,8 +404,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 665.0, 454.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes5",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes5",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes5",
@@ -265,8 +450,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 745.0, 423.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback4",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback4",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback4",
@@ -285,8 +496,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 665.0, 423.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes4",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes4",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes4",
@@ -305,8 +542,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 746.0, 392.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback3",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback3",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback3",
@@ -325,8 +588,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 666.0, 392.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes3",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes3",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes3",
@@ -345,8 +634,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 746.0, 361.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback2",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback2",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback2",
@@ -365,8 +680,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 666.0, 361.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes2",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes2",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes2",
@@ -385,8 +726,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 746.0, 328.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback1",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback1",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback1",
@@ -405,8 +772,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 666.0, 328.0, 74.0, 20.0 ],
 					"restore" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes1",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes1",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes1",
@@ -425,8 +818,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 746.0, 297.0, 92.0, 20.0 ],
 					"restore" : [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "playback0",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "playback0",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr playback0",
@@ -445,8 +864,34 @@
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 666.0, 297.0, 74.0, 20.0 ],
 					"restore" : [ 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+					"saved_attribute_attributes" : 					{
+						"valueof" : 						{
+							"parameter_unitstyle" : 10,
+							"parameter_mmax" : 127.0,
+							"parameter_mmin" : 0.0,
+							"parameter_type" : 3,
+							"parameter_initial_enable" : 0,
+							"parameter_shortname" : "notes0",
+							"parameter_modmax" : 127.0,
+							"parameter_longname" : "notes0",
+							"parameter_modmin" : 0.0,
+							"parameter_linknames" : 0,
+							"parameter_modmode" : 0,
+							"parameter_info" : "",
+							"parameter_units" : "",
+							"parameter_order" : 0,
+							"parameter_defer" : 0,
+							"parameter_speedlim" : 1.0,
+							"parameter_invisible" : 1,
+							"parameter_steps" : 0,
+							"parameter_annotation_name" : "",
+							"parameter_exponent" : 1.0
+						}
+
+					}
+,
 					"saved_object_attributes" : 					{
-						"parameter_enable" : 0
+						"parameter_enable" : 1
 					}
 ,
 					"text" : "pattr notes0",
@@ -472,21 +917,7 @@
 					}
 ,
 					"text" : "pattrstorage",
-					"varname" : "u520000813"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Arial",
-					"fontsize" : 12.0,
-					"id" : "obj-16",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 330.0, 75.0, 37.0, 18.0 ],
-					"text" : "1 1 0"
+					"varname" : "u375000961"
 				}
 
 			}
@@ -898,7 +1329,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-54", 0 ],
+					"destination" : [ "obj-21", 0 ],
 					"hidden" : 0,
 					"midpoints" : [  ],
 					"source" : [ "obj-1", 3 ]
@@ -961,10 +1392,10 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-1", 2 ],
+					"destination" : [ "obj-7", 0 ],
 					"hidden" : 0,
 					"midpoints" : [  ],
-					"source" : [ "obj-16", 0 ]
+					"source" : [ "obj-17", 0 ]
 				}
 
 			}
@@ -1046,6 +1477,15 @@
 					"hidden" : 0,
 					"midpoints" : [  ],
 					"source" : [ "obj-26", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-21", 0 ],
+					"hidden" : 0,
+					"midpoints" : [  ],
+					"source" : [ "obj-27", 0 ]
 				}
 
 			}
@@ -1162,24 +1602,6 @@
 					"destination" : [ "obj-21", 0 ],
 					"hidden" : 0,
 					"midpoints" : [  ],
-					"source" : [ "obj-54", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-53", 0 ],
-					"hidden" : 0,
-					"midpoints" : [  ],
-					"source" : [ "obj-54", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-21", 0 ],
-					"hidden" : 0,
-					"midpoints" : [  ],
 					"source" : [ "obj-59", 0 ]
 				}
 
@@ -1231,6 +1653,24 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-21", 0 ],
+					"hidden" : 0,
+					"midpoints" : [  ],
+					"source" : [ "obj-7", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-27", 1 ],
+					"hidden" : 0,
+					"midpoints" : [  ],
+					"source" : [ "obj-7", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"hidden" : 0,
 					"midpoints" : [ 33.5, 112.0, 100.5, 112.0 ],
@@ -1256,7 +1696,26 @@
 				}
 
 			}
- ]
+ ],
+		"parameters" : 		{
+			"obj-37" : [ "playback2", "playback2", 0 ],
+			"obj-43" : [ "playback7", "playback7", 0 ],
+			"obj-35" : [ "notes3", "notes3", 0 ],
+			"obj-29" : [ "playback1", "playback1", 0 ],
+			"obj-45" : [ "playback6", "playback6", 0 ],
+			"obj-42" : [ "notes2", "notes2", 0 ],
+			"obj-44" : [ "notes7", "notes7", 0 ],
+			"obj-23" : [ "playback0", "playback0", 0 ],
+			"obj-47" : [ "playback5", "playback5", 0 ],
+			"obj-32" : [ "notes1", "notes1", 0 ],
+			"obj-46" : [ "notes6", "notes6", 0 ],
+			"obj-49" : [ "playback4", "playback4", 0 ],
+			"obj-22" : [ "notes0", "notes0", 0 ],
+			"obj-48" : [ "notes5", "notes5", 0 ],
+			"obj-33" : [ "playback3", "playback3", 0 ],
+			"obj-50" : [ "notes4", "notes4", 0 ]
+		}
+
 	}
 
 }

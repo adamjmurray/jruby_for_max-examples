@@ -2,13 +2,19 @@ class LaunchpadController
 
   attr_reader :screen, :track, :selected_pattern
   
-  def initialize model, view
+  def initialize model, view, note_out
     @model = model
     @view = view
+    @note_out = note_out
     @track = 0
     @button_timer = LaunchpadButtonTimer.new self
+    @flam_timer = LaunchpadFlamTimer.new self
     self.screen = 0
     self.mode = 3
+  end
+  
+  def note_out pitch,velocity
+    @note_out.call pitch,velocity
   end
     
   def screen= index
@@ -81,7 +87,19 @@ class LaunchpadController
     x = pulse_index % 8
     y = (pulse_index / 8) % 8
     select_step x,y
-    step_values x,y   
+    @patterns.each_with_index do |pattern,index| 
+      note_value = @model.note_patterns[index][x,y]
+      if note_value > 0
+        pitch = index
+        velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
+        playback_value = @model.playback_patterns[index][x,y]  
+        case playback_value
+          when LaunchpadModel::PLAYBACK_NORMAL then note_out pitch,velocity            
+          when LaunchpadModel::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
+          when LaunchpadModel::PLAYBACK_SKIP  then :TODO
+        end
+      end      
+    end
   end
   
   def step_values x,y
