@@ -19,10 +19,6 @@ class LaunchpadController
     
   def screen= index
     @screen = index
-    @patterns = case index
-      when 1 then @model.playback_patterns 
-      else @model.note_patterns
-    end
     @view.radio_select_arrow_button index
     self.track = @track
   end
@@ -31,33 +27,48 @@ class LaunchpadController
     if index == 3
       @mode = :timed
       @button_timer.active = true
-      color = [3,2]
     else
       @mode = index+1
       @button_timer.active = false
-      color = LaunchpadModel::Pattern.color_for @mode
     end
-    @view.radio_select_mode_button index, color
+    @view.radio_select_mode_button index
   end    
   
   def track= index
     @track = index
     @button_timer.clear
-    @selected_pattern = @patterns[index]
-    @selected_step = nil    
+    @pattern = @model.patterns[index]
     @view.radio_select_right_button index
-    @view.render_grid @selected_pattern, @selected_step
+    @view.grid = grid_values
+    select_step @selected_step if @selected_step
+  end
+  
+  # the values for the grid (in a 64 element array) that's currently displayed
+  def grid_values
+    case @screen
+      when 1 then @pattern.playback
+      else @pattern.notes
+    end  
   end
 
+  # TODO update all of these to use flat indexing 0..63
   def get_step x,y
-    @selected_pattern[x,y]
+    index = x+y*8
+    grid_values[index]
   end
 
+  # TODO update all of these to use flat indexing 0..63
   def set_step x,y,value
-    @selected_pattern[x,y]= value
-    @view.render_grid_button @selected_pattern, x, y, (@selected_step == [x,y])
+    index = x+y*8    
+    # TODO: this logic should be encapsulated in the model
+    case @screen
+      when 1 then @pattern.set_playback(index,value)
+      else @pattern.set_note(index,value)
+    end
+    @view.redraw_step index
   end
 
+  # TODO update all of these to use flat indexing 0..63
   def step_pressed x,y
     if @mode == :timed
       @button_timer.step_pressed x,y
@@ -67,42 +78,29 @@ class LaunchpadController
     end
   end
   
+  # TODO update all of these to use flat indexing 0..63
   def step_released x,y
     if @mode == :timed    
       @button_timer.step_released x,y
     end
   end
   
-  def select_step x,y
-    prev_selected_step = @selected_step
-    @selected_step = [x,y]
-    if prev_selected_step
-      prev_x, prev_y = *prev_selected_step          
-      @view.render_grid_button @selected_pattern, prev_x, prev_y
-    end
-    @view.render_grid_button @selected_pattern, x, y, true     
+  def select_step index
+    @selected_step = index    
+    @view.selected_grid_index = @pattern.get_grid_index(index)
   end
   
-  def pulse pulse_index
+  def pulse index
     for track in 0..7
-      playback = @model.playback_patterns[track]
-      playback_length = playback.length
-      
-      # TODO: this approach is too simplistic, and buggy
-      # It doesn't index the active note correctly, it simply truncase from the end of the note grid.
-      step = pulse_index % playback_length      
-      
-      x = step % 8
-      y = (step / 8) % 8        
-      select_step x,y if track == @track
-            
-      note_value = @model.note_patterns[track][x,y]
-      if note_value > 0
+      select_step index if track == @track
+      pattern = @model.patterns[track]            
+      note_value = pattern.get_note(index)
+      if note_value > 0        
         pitch = track
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
-        case playback[x,y]  
-          when LaunchpadModel::PLAYBACK_NORMAL then note_out pitch,velocity            
-          when LaunchpadModel::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
+        case pattern.get_playback(index)
+          when LaunchpadPattern::PLAYBACK_NORMAL then note_out pitch,velocity            
+          when LaunchpadPattern::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
         end
       end      
     end

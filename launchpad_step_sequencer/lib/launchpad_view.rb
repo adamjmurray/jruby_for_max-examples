@@ -10,7 +10,8 @@ class LaunchpadView
   end
   
   # light up a button on the right column, turning off any previously lit button
-  def radio_select_right_button index, color=[3,0]
+  def radio_select_right_button index
+    color=[3,0]
     if @active_right_button_index
       # turn off previously lit button
       @launchpad.right @active_right_button_index, nil
@@ -19,7 +20,8 @@ class LaunchpadView
     @active_right_button_index = index        
   end
   
-  def radio_select_arrow_button index, color=[3,3]
+  def radio_select_arrow_button index
+    color=[3,3]
     if @arrow_button_index
       # turn off previously lit button
       @launchpad.top @arrow_button_index, nil
@@ -28,7 +30,13 @@ class LaunchpadView
     @arrow_button_index = index        
   end
   
-  def radio_select_mode_button index, color=[0,3]
+  def radio_select_mode_button index
+    if index == 3
+      color = [3,2]
+    else
+      color = color_for index+1
+    end
+    
     index += 4
     if @mode_button_index
       # turn off previously lit button
@@ -37,26 +45,42 @@ class LaunchpadView
     @launchpad.top index, color
     @mode_button_index = index        
   end
-
-  # update the 8x8 grid to display the state of the given pattern model object
-  def render_grid pattern, selected_step
-    for y in 0..7
-      for x in 0..7
-        selected = ([x,y] == selected_step)      
-        render_grid_button pattern, x, y, selected
-      end
-    end
+  
+  # update the 8x8 grid to display the values in a 64 element array
+  def grid= grid_values 
+    @grid_values = grid_values
+    redraw_grid
   end
   
-  # update the lights on a single button in the 8x8 grid
-  def render_grid_button pattern, x, y, selected=false
-    g,r = *pattern.color_at(x,y)
-    if selected
+  def selected_grid_index= index
+    prev_index = @selected_grid_index
+    @selected_grid_index = index
+    redraw_step prev_index if prev_index
+    redraw_step index
+  end
+  
+  def redraw_grid
+    64.times{|index| redraw_step index }
+  end
+  
+  def redraw_step index
+    g,r = color_for @grid_values[index]
+    if index == @selected_grid_index
       g += 1
       r += 1
     end  
+    x = (index % 8)
+    y = (index / 8)
     @launchpad.grid x,y,[g,r]
-    #puts "#{x},#{y}: [#{g}/#{r}]"    
+  end
+  
+  def color_for value
+    case value
+      when 1 then [2,0]
+      when 2 then [1,2]
+      when 3 then [0,2]
+      else [0,0]
+    end
   end
   
 end

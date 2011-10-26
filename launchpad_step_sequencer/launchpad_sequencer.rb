@@ -1,6 +1,7 @@
 require 'lib/launchpad_adapter'
 require 'lib/launchpad_button_timer'
 require 'lib/launchpad_flam_timer'
+require 'lib/launchpad_pattern'
 require 'lib/launchpad_model'
 require 'lib/launchpad_view'
 require 'lib/launchpad_controller'

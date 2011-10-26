@@ -1,108 +1,27 @@
 class LaunchpadModel
 
-  class Pattern
-    attr_accessor :grid
-    
-    def initialize
-      # each pattern is an 8x8 matrix representing the launchpad grid, 
-      # where each value in the matrix is an int ranging from 0-3      
-      @grid = Array.new(8) { Array.new(8,0) }
-    end
-    
-    def [](x,y)
-      # all the indexing is reversed so when we convert to/from JSON, the representation is a list of rows
-      # rather than a list of columns, which I think is more intuitive
-      @grid[y][x]
-    end
-    
-    def []=(x,y,value)
-      @grid[y][x] = value
-    end
-    
-    def self.color_for value
-      case value
-        when 1 then [2,0]
-        when 2 then [1,2]
-        when 3 then [0,2]
-        else [0,0]
-      end
-    end
-    
-    def color_at(x,y)      
-      self.class.color_for @grid[y][x]
-    end
-  end
-  
-  
-  # definition of values for the playback grids
-  PLAYBACK_MUTE = 0
-  PLAYBACK_NORMAL = 1
-  PLAYBACK_FLAM = 2
-  PLAYBACK_SKIP = 3
-  
-  class PlaybackPattern < Pattern
-
-    attr_reader :length
-    
-    SKIP = LaunchpadModel::PLAYBACK_SKIP
-    
-    def initialize
-      @grid = Array.new(8) { Array.new(8,1) }
-      @length = 64
-    end
-    
-    def grid= grid
-      @grid = grid
-      length = 0
-      for value in grid.flatten
-        length += 1 if value != SKIP
-      end
-      @length = length
-      grid
-    end
-    
-    def []=(x,y,value)
-      prev_value = self[x,y]
-      if prev_value != value
-        super
-        if value == SKIP
-          @length -= 1
-        elsif prev_value == SKIP
-          @length += 1        
-        end
-      end
-    end
-  end
-
-  
-  # each note pattern is an 8x8 matrix representing the launchpad grid, 
-  # where each value in the matrix is an int ranging from 0-3
-  attr_reader :note_patterns
-
-  # playback patterns control whether the steps in the corresponding note pattern
-  # play normally, play a flam, are muted, or are skipped
-  attr_reader :playback_patterns
-  
+  attr_reader :patterns
   
   def initialize
-    @note_patterns = Array.new(8) { Pattern.new }  
-    @playback_patterns = Array.new(8) { PlaybackPattern.new }
+    @patterns = Array.new(8) { LaunchpadPattern.new }
   end
   
   def serialize(*args)
     data = {}
-    @note_patterns.each_with_index{|pattern,index| data["notes#{index}"] = pattern.grid.flatten }
-    @playback_patterns.each_with_index{|pattern,index| data["playback#{index}"] = pattern.grid.flatten }
+    error "serialize implementation needs to be updated"
+    #@note_patterns.each_with_index{|pattern,index| data["notes#{index}"] = pattern.grid.flatten }
+    #@playback_patterns.each_with_index{|pattern,index| data["playback#{index}"] = pattern.grid.flatten }
     data
   end
   
   def deserialize data
-    element = data.shift
-    case element
-      when /notes([0-7])/ then @note_patterns[$1.to_i].grid = data.each_slice(8).to_a
-      when /playback([0-7])/ then @playback_patterns[$1.to_i].grid = data.each_slice(8).to_a
-      else error "invalid model element: #{elemen}"
-    end    
+    error "desserialize implementation needs to be updated"    
+    # element = data.shift
+    # case element
+    #   when /notes([0-7])/ then @note_patterns[$1.to_i].grid = data.each_slice(8).to_a
+    #   when /playback([0-7])/ then @playback_patterns[$1.to_i].grid = data.each_slice(8).to_a
+    #   else error "invalid model element: #{elemen}"
+    # end    
   end
   
 end
