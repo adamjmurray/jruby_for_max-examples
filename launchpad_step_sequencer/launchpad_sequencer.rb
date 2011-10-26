@@ -53,9 +53,10 @@ end
 
 def in3 *data
   if data.first == 'dump' # dump of all values is done
-    @controller.screen = 0   
+    @view.redraw_grid
   else    
-    @model.deserialize data
+    property_name = data.shift # first element is the property name (standard pattr message format)    
+    @model.deserialize_property property_name,data
   end
 end
 
