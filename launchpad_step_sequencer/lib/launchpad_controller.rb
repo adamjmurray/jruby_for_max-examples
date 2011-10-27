@@ -6,7 +6,7 @@ class LaunchpadController
     @model = model
     @view = view
     @note_out = note_out
-    @track = 0
+    @track_index = 0
     @button_timer = LaunchpadButtonTimer.new self
     @flam_timer = LaunchpadFlamTimer.new self
     self.screen = 0
@@ -18,11 +18,12 @@ class LaunchpadController
   end
     
   def screen= index
-    @screen = index
+    @screen_index = index
     @view.radio_select_arrow_button index
-    self.track = @track
+    self.track = @track_index
   end
   
+  # set the input mode based on the mode button index (0-3)
   def mode= index
     if index == 3
       @mode = :timed
@@ -35,9 +36,9 @@ class LaunchpadController
   end    
   
   def track= index
-    @track = index
+    @track_index = index
     @button_timer.clear
-    @pattern = @model.patterns[index]
+    @track = @model.tracks[index]
     @view.radio_select_right_button index
     @view.grid = grid_values
     select_step @selected_step if @selected_step
@@ -45,9 +46,9 @@ class LaunchpadController
   
   # the values for the grid (in a 64 element array) that's currently displayed
   def grid_values
-    case @screen
-      when 1 then @pattern.playback
-      else @pattern.notes
+    case @screen_index
+      when 1 then @track.playback
+      else @track.notes
     end  
   end
 
@@ -61,9 +62,9 @@ class LaunchpadController
   def set_step x,y,value
     index = x+y*8    
     # TODO: this logic should be encapsulated in the model
-    case @screen
-      when 1 then @pattern.set_playback(index,value)
-      else @pattern.set_note(index,value)
+    case @screen_index
+      when 1 then @track.set_playback(index,value)
+      else @track.set_note(index,value)
     end
     @view.redraw_step index
   end
@@ -73,7 +74,7 @@ class LaunchpadController
     if @mode == :timed
       @button_timer.step_pressed x,y
     else
-      value = get_step(x,y) == @mode ? 0 : @mode        
+      value = (get_step(x,y) == @mode ? 0 : @mode)
       set_step x,y,value
     end
   end
@@ -87,33 +88,22 @@ class LaunchpadController
   
   def select_step index
     @selected_step = index    
-    @view.selected_grid_index = @pattern.get_grid_index(index)
+    @view.selected_grid_index = @track.get_grid_index(index)
   end
   
   def pulse index
-    for track in 0..7
-      select_step index if track == @track
-      pattern = @model.patterns[track]            
-      note_value = pattern.get_note(index)
+    for track_index in 0..7
+      select_step index if track_index == @track_index
+      track = @model.tracks[track_index]            
+      note_value = track.get_note(index)
       if note_value > 0        
-        pitch = track
+        pitch = track_index
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
-        case pattern.get_playback(index)
-          when LaunchpadPattern::PLAYBACK_NORMAL then note_out pitch,velocity            
-          when LaunchpadPattern::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
+        case track.get_playback(index)
+          when LaunchpadTrack::PLAYBACK_NORMAL then note_out pitch,velocity            
+          when LaunchpadTrack::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
         end
       end      
-    end
-  end
-  
-  def step_values x,y
-     @patterns.collect.with_index do |pattern,index| 
-       playback_value = @model.playback_patterns[index][x,y]       
-       if playback_value > 0 # TODO: support skip, flam...
-         note_value = @model.note_patterns[index][x,y]
-       else
-         0
-       end
     end
   end
   
