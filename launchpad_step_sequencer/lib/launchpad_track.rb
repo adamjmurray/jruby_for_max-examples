@@ -8,6 +8,13 @@ class LaunchpadTrack
   # playback patterns control whether the steps in the corresponding note pattern
   # play normally, play a flam, are muted, or are skipped      
   attr_reader :playback
+
+  # Indexes for the currently selected notes and playback presets.
+  # There are 32 presets for each per track (the 8x8 grid is used for both notes and playback presets for a track)
+  # Note: The notes and playback arrays only contain the data for the current preset. 
+  #       The data for all other presets is managed in the Max patcher with the pattr system.
+  attr_reader :notes_preset_index, :playback_preset_index    
+
   
   # definition of values for the playback grid
   PLAYBACK_MUTE = 0
@@ -16,10 +23,14 @@ class LaunchpadTrack
   PLAYBACK_SKIP = 3
   
   SIZE = 64
+  PRESETS = 32
+  
   
   def initialize
     @notes = Array.new(SIZE,0)    
     @playback = Array.new(SIZE,PLAYBACK_NORMAL)
+    @notes_preset_index = 0
+    @playback_preset_index = 0
   end
   
   def active_notes

@@ -11,19 +11,18 @@ class LaunchpadButtonTimer
           if @active
             unless @pressed.empty?
               now = Time.new
-              for key,val in @pressed
-                x,y = *key
+              for index,val in @pressed
                 value,time = *val
                 value_increment = ((now - time) / BUTTON_HOLD_RATE).to_i
                 if value_increment > 0
                   value += value_increment
                   if value >= 3
                     value = 3
-                    @pressed.delete [x,y]
+                    @pressed.delete index
                   else
-                    @pressed[[x,y]] = [value,time + BUTTON_HOLD_RATE*value_increment]
+                    @pressed[index] = [value,time + BUTTON_HOLD_RATE*value_increment]
                   end
-                  @controller.set_step x,y,value
+                  @controller.set_step index,value
                 end
               end
             end
@@ -49,19 +48,19 @@ class LaunchpadButtonTimer
     clear if not active
   end
   
-  def step_pressed x,y
-    value = @controller.get_step x,y
+  def step_pressed index
+    value = @controller.get_step index
     if value == 0
-      @pressed[[x,y]] = [1,Time.new]
+      @pressed[index] = [1,Time.new]
       value = 1
     else
       value = 0
     end
-    @controller.set_step x,y,value      
+    @controller.set_step index,value      
   end
 
-  def step_released x,y
-    @pressed.delete [x,y]
+  def step_released index
+    @pressed.delete index
   end
   
   def clear

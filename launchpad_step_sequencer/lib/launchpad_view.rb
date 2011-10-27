@@ -1,58 +1,41 @@
-class LaunchpadView
+class LaunchpadView < LaunchpadAdapter
 
-  def initialize(launchpad_adapter)
-    @launchpad = launchpad_adapter
+  def initialize(model, note_on_sender, control_change_sender)
+    super note_on_sender, control_change_sender
+    @model = model
     all_off
+    redraw
   end
   
-  def all_off
-    @launchpad.all_off
+  def redraw
+    redraw_track_selection
+    redraw_screen_selection
+    redraw_mode_selection    
+    redraw_grid
   end
   
-  # light up a button on the right column, turning off any previously lit button
-  def radio_select_right_button index
-    color=[3,0]
-    if @active_right_button_index
-      # turn off previously lit button
-      @launchpad.right @active_right_button_index, nil
-    end
-    @launchpad.right index, color
-    @active_right_button_index = index        
+  def redraw_track_selection
+    color = [3,0]
+    radio_select_right_button @model.track_index,color
   end
   
-  def radio_select_arrow_button index
-    color=[3,3]
-    if @arrow_button_index
-      # turn off previously lit button
-      @launchpad.top @arrow_button_index, nil
-    end
-    @launchpad.top index, color
-    @arrow_button_index = index        
-  end
+  def redraw_screen_selection
+    color = [3,3]
+    radio_select_arrow_button @model.screen_index,color
+  end  
   
-  def radio_select_mode_button index
+  def redraw_mode_selection
+    index = @model.mode_index
     if index == 3
       color = [3,2]
     else
       color = color_for index+1
     end
-    
-    index += 4
-    if @mode_button_index
-      # turn off previously lit button
-      @launchpad.top @mode_button_index, nil
-    end
-    @launchpad.top index, color
-    @mode_button_index = index        
-  end
-  
-  # update the 8x8 grid to display the values in a 64 element array
-  def grid= grid_values 
-    @grid_values = grid_values
-    redraw_grid
+    radio_select_mode_button index,color
   end
   
   def selected_grid_index= index
+    # TODO: selected_grid_index should be in the model
     prev_index = @selected_grid_index
     @selected_grid_index = index
     redraw_step prev_index if prev_index
@@ -60,18 +43,21 @@ class LaunchpadView
   end
   
   def redraw_grid
-    64.times{|index| redraw_step index }
+    grid_values = @model.grid_values
+    64.times{|index| redraw_step index, grid_values }
   end
   
-  def redraw_step index
-    g,r = color_for @grid_values[index]
+  def redraw_step index, grid_values=@model.grid_values
+    g,r = color_for grid_values[index]
+    
+    # TODO: selected_grid_index should be in the model
     if index == @selected_grid_index
       g += 1
       r += 1
     end  
     x = (index % 8)
     y = (index / 8)
-    @launchpad.grid x,y,[g,r]
+    grid x,y,[g,r]
   end
   
   def color_for value

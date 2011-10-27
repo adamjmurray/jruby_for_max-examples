@@ -51,6 +51,35 @@ class LaunchpadAdapter
       control_change(31, 16*(n-9) + (d-3))
     end
   end
+  
+  # light up a button on the right column, turning off any previously lit button
+  def radio_select_right_button index,color
+    if @active_right_button_index
+      # turn off previously lit button
+      right @active_right_button_index,nil
+    end
+    right index,color
+    @active_right_button_index = index        
+  end
+  
+  def radio_select_arrow_button index,color
+    if @active_arrow_button_index
+      # turn off previously lit button
+      top @active_arrow_button_index,nil
+    end
+    top index,color
+    @active_arrow_button_index = index        
+  end
+  
+  def radio_select_mode_button index,color
+    top_row_button_index = index+4
+    if @active_mode_button
+      # turn off previously lit button
+      top @active_mode_button,nil
+    end
+    top top_row_button_index,color
+    @active_mode_button = top_row_button_index        
+  end
 
   ###############################
   protected

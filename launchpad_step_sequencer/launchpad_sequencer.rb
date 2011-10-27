@@ -9,24 +9,24 @@ require 'lib/launchpad_controller'
 inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'model load'
 outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'model dump'
 
-@launchpad = LaunchpadAdapter.new lambda{|pitch,velocity| out0 pitch,velocity}, lambda{|number,value| out1 number,value}
 @model = LaunchpadModel.new
-@view = LaunchpadView.new @launchpad
-@controller = LaunchpadController.new @model, @view, lambda{|pitch,velocity| out2 pitch,velocity}
+@view = LaunchpadView.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
+@controller = LaunchpadController.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}
  
 def in0 *args # note on/off
   note,velocity = *args
   x = note % 16
   y = note / 16  
-
+  grid_index = x + y*8
+  
   if velocity > 0
     if x > 7
       @controller.track = y
     else
-      @controller.step_pressed x,y
+      @controller.step_pressed grid_index
     end
   else
-    @controller.step_released x,y
+    @controller.step_released grid_index
   end
 end 
 
@@ -35,7 +35,7 @@ def in1 *args
   cc,val = *args  
   if val > 0
     index = cc-104
-    if index < 2 # only 2 screens so far
+    if index < 3 # only 3 screens so far
       @controller.screen = index
     elsif index > 3
       @controller.mode = index-4
