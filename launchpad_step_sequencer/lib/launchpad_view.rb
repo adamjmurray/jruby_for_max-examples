@@ -48,11 +48,21 @@ class LaunchpadView < LaunchpadAdapter
   
   def redraw_grid
     grid_values = @model.grid_values
+    @preset_grid_values = grid_values if @model.presets_screen_selected?
     @selected_grid_index = @model.selected_grid_index
     64.times{|index| redraw_step index, grid_values, @selected_grid_index }
   end
   
-  def redraw_step index, grid_values=@model.grid_values, selected_grid_index=@model.selected_grid_index    
+  def redraw_preset_grid
+    prev_preset_grid_values = @preset_grid_values
+    @preset_grid_values = @model.grid_values
+    if prev_preset_grid_values
+      prev_preset_grid_values.keys.each{|index| redraw_step index, @preset_grid_values, nil }
+    end
+    @preset_grid_values.keys.each{|index| redraw_step index, @preset_grid_values, nil }
+  end
+  
+  def redraw_step index, grid_values=@model.grid_values, selected_grid_index=@model.selected_grid_index        
     x = (index % 8)
     y = (index / 8)
     

@@ -54,15 +54,30 @@ class LaunchpadModel
     @screen_index = index
   end
   
+  def presets_screen_selected?
+    @screen_index == SCREEN_PRESETS
+  end
+  
   def select_mode index
     @mode_index = index
   end
   
   def set_grid_step index,value
-    case @screen_index
-      when SCREEN_NOTES then  @track.set_note(index,value)
-      when SCREEN_PLAYBACK then @track.set_playback(index,value)
-      else error "Unsupported screen #{@screen_index} for set_grid_set" # TODO: implement preset screen
+    case @screen_index      
+      when SCREEN_NOTES 
+        @track.set_note(index,value)
+        
+      when SCREEN_PLAYBACK 
+        @track.set_playback(index,value)
+        
+      when SCREEN_PRESETS
+        if index < 32
+          @track.notes_preset_index = index
+        else
+          @track.playback_preset_index = index-32
+        end
+        
+      else error "Unsupported screen #{@screen_index} for set_grid_set" # TODO: implement FX screen
     end
   end
   

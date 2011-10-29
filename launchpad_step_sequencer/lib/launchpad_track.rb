@@ -13,7 +13,7 @@ class LaunchpadTrack
   # There are 32 presets for each per track (the 8x8 grid is used for both notes and playback presets for a track)
   # Note: The notes and playback arrays only contain the data for the current preset. 
   #       The data for all other presets is managed in the Max patcher with the pattr system.
-  attr_reader :notes_preset_index, :playback_preset_index    
+  attr_accessor :notes_preset_index, :playback_preset_index    
 
   
   # definition of values for the playback grid

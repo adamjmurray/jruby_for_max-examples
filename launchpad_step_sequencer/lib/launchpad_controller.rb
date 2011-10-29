@@ -50,7 +50,11 @@ class LaunchpadController
 
   def set_step index,value
     @model.set_grid_step index,value
-    @view.redraw_step index
+    if @model.presets_screen_selected?
+      @view.redraw_preset_grid
+    else
+      @view.redraw_step index
+    end
   end
 
   def step_pressed index
