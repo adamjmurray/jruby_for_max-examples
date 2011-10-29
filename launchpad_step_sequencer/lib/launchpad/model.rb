@@ -1,4 +1,4 @@
-class LaunchpadModel
+class Launchpad::Model
 
   # The list of tracks in the model
   attr_reader :tracks
@@ -39,7 +39,7 @@ class LaunchpadModel
   
   
   def initialize
-    @tracks = Array.new(8) { LaunchpadTrack.new }
+    @tracks = Array.new(8) { Launchpad::Track.new }
     select_track 0
     @screen_index = SCREEN_NOTES
     @mode_index = MODE_YELLOW

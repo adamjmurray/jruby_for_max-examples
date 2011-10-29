@@ -1,4 +1,4 @@
-class LaunchpadFlamTimer
+class Launchpad::FlamTimer
   TIMER_RATE = 0.01
   FLAM_RATE = 0.05 # another note-on is sent out at this rate (in seconds)
   FLAM_REPEAT = 3 # number of note-ons sent after the intial note-on that triggers a flam

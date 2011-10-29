@@ -1,4 +1,4 @@
-class LaunchpadView < LaunchpadAdapter
+class Launchpad::View < Launchpad::Adapter
 
   def initialize(model, note_on_sender, control_change_sender)
     super note_on_sender, control_change_sender

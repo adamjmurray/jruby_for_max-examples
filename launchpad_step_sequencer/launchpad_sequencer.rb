@@ -1,19 +1,13 @@
-require 'lib/launchpad_adapter'
-require 'lib/launchpad_button_timer'
-require 'lib/launchpad_flam_timer'
-require 'lib/launchpad_track'
-require 'lib/launchpad_model'
-require 'lib/launchpad_view'
-require 'lib/launchpad_controller'
-
+require 'lib/launchpad'
 inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'model load'
 outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'model dump'
 
-@model = LaunchpadModel.new
-@view = LaunchpadView.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
-@controller = LaunchpadController.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(*args){out3 *args}
+@model = Launchpad::Model.new
+@view = Launchpad::View.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
+@controller = Launchpad::Controller.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(*args){out3 *args}
  
-def in0 *args # note on/off
+# note on/off 
+def in0 *args 
   note,velocity = *args
   x = note % 16
   y = note / 16  
@@ -58,10 +52,21 @@ def in3 *data
   end
 end
 
-def dump
-  preset_number = 1 # TODO: support different preset slots
-  for param,value in @model.serialize
-    out3 'setstoredvalue', param, preset_number, *value
+# def dump
+#   preset_number = 1 # TODO: support different preset slots
+#   for param,value in @model.serialize
+#     out3 'setstoredvalue', param, preset_number, *value
+#   end
+# end
+
+def init_pattrstorage
+  default_note_grid = [0]*64
+  default_playback_grid = [Launchpad::Track::PLAYBACK_NORMAL]*64
+  for preset_number in 0..31
+    for track_index in 0..7
+      out3 'setstoredvalue', "notes#{track_index}", preset_number, *default_note_grid
+      out3 'setstoredvalue', "playback#{track_index}", preset_number, *default_playback_grid      
+    end
   end
 end
 
@@ -72,6 +77,6 @@ end
 # set all the lights on the launchpad hardware for the current state
 # used to undo the "all notes off" message automatically send by Ableton Live to all MIDI hardware
 def reset_lights
-  @controller.select_pattern @controller.selected_pattern_index
+  @view.redraw
 end 
 

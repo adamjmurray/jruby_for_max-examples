@@ -1,4 +1,4 @@
-class LaunchpadAdapter
+class Launchpad::Adapter
   
   def initialize(note_on_sender, control_change_sender)
     @note_on_sender = note_on_sender

@@ -1,5 +1,5 @@
 # The model state for a single track
-class LaunchpadTrack
+class Launchpad::Track
     
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3    

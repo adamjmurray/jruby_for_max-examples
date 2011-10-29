@@ -1,10 +1,10 @@
-class LaunchpadController
+class Launchpad::Controller
 
   def initialize model, view, note_out, preset_out
     @model,@view = model,view
     @note_out,@preset_out = note_out,preset_out
-    @button_timer = LaunchpadButtonTimer.new self
-    @flam_timer = LaunchpadFlamTimer.new self
+    @button_timer = Launchpad::ButtonTimer.new self
+    @flam_timer = Launchpad::FlamTimer.new self
     timed_mode    
   end
   
@@ -87,8 +87,8 @@ class LaunchpadController
         pitch = track_index
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
         case track.get_playback(pulse_index)
-          when LaunchpadTrack::PLAYBACK_NORMAL then note_out pitch,velocity            
-          when LaunchpadTrack::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
+          when Launchpad::Track::PLAYBACK_NORMAL then note_out pitch,velocity            
+          when Launchpad::Track::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
         end
       end      
     end
