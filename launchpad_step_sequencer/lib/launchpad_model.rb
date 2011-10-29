@@ -67,7 +67,9 @@ class LaunchpadModel
   end
   
   def selected_grid_index
-    @track.get_grid_index @pulse_index if @pulse_index
+    if @pulse_index and @screen_index < 2 # we only should the pulse light on screens 0 and 1
+      @track.get_grid_index @pulse_index
+    end
   end
   
   # The values for the grid (in a 64 element array) that's currently displayed.
@@ -77,7 +79,7 @@ class LaunchpadModel
     case @screen_index
       when SCREEN_NOTES then @track.notes
       when SCREEN_PLAYBACK then @track.playback
-      when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index+32 => 2}
+      when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index+32 => 3}
       else EMPTY_GRID
     end  
   end
