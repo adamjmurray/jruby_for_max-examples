@@ -45,12 +45,10 @@ end
  
 # metro input in [bars, beats, units]
 def in2 *args
-  bars,beats,units = *args
-  # assume 4/4 with 1/16 note pulses
-  pulse_index = (bars-1)*16 + (beats-1)*4 + (units/120).round
-  @controller.pulse(pulse_index)
+  @controller.pulse *args
 end
 
+# pattrstorage input
 def in3 *data
   if data.first == 'dump' # dump of all values is done
     @view.redraw_grid

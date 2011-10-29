@@ -66,21 +66,18 @@ class LaunchpadController
     @button_timer.step_released index if @mode_type == :timed    
   end
   
-  def select_step index
-    @selected_step = index        
-    # TODO: selected_grid_index should be in the model
-    @view.selected_grid_index = @model.track.get_grid_index(index)
-  end
-  
-  def pulse index
-    for track_index in 0..7
-      select_step index if track_index == @model.track_index
-      track = @model.tracks[track_index]            
-      note_value = track.get_note(index)
+  def pulse bars,beats,units
+    # assume 4/4 with 1/16 note pulses
+    pulse_index = (bars-1)*16 + (beats-1)*4 + (units/120).round
+    @model.pulse_index = pulse_index
+    @view.redraw_pulse_index
+    
+    @model.tracks.each_with_index do |track,track_index|
+      note_value = track.get_note(pulse_index)
       if note_value > 0        
         pitch = track_index
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
-        case track.get_playback(index)
+        case track.get_playback(pulse_index)
           when LaunchpadTrack::PLAYBACK_NORMAL then note_out pitch,velocity            
           when LaunchpadTrack::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
         end

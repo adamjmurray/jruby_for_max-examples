@@ -34,30 +34,36 @@ class LaunchpadView < LaunchpadAdapter
     radio_select_mode_button index,color
   end
   
-  def selected_grid_index= index
-    # TODO: selected_grid_index should be in the model
+  def redraw_pulse_index
+    index = @model.selected_grid_index
     prev_index = @selected_grid_index
     @selected_grid_index = index
-    redraw_step prev_index if prev_index
-    redraw_step index
+    
+    grid_values = @model.grid_values
+    selected_grid_index = @model.selected_grid_index
+    
+    redraw_step prev_index, grid_values, selected_grid_index if prev_index
+    redraw_step index, grid_values, selected_grid_index
   end
   
   def redraw_grid
     grid_values = @model.grid_values
-    64.times{|index| redraw_step index, grid_values }
+    selected_grid_index = @model.selected_grid_index
+    64.times{|index| redraw_step index, grid_values, selected_grid_index }
   end
   
-  def redraw_step index, grid_values=@model.grid_values
-    g,r = color_for grid_values[index]
+  def redraw_step index, grid_values=@model.grid_values, selected_grid_index=@model.selected_grid_index    
+    x = (index % 8)
+    y = (index / 8)
     
-    # TODO: selected_grid_index should be in the model
-    if index == @selected_grid_index
+    g,r = color_for grid_values[index]    
+    if index == selected_grid_index
       g += 1
       r += 1
     end  
-    x = (index % 8)
-    y = (index / 8)
-    grid x,y,[g,r]
+    color = [g,r]
+    
+    grid x,y,color
   end
   
   def color_for value

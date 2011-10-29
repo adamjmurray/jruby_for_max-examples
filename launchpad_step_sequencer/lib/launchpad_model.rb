@@ -1,18 +1,41 @@
 class LaunchpadModel
 
-  attr_reader :tracks, :track, :track_index, :screen_index, :mode_index
+  # The list of tracks in the model
+  attr_reader :tracks
+
+  # The currently selected track
+  attr_reader :track
   
+  # The index of the currently selected track
+  # Ranges from 0-7
+  attr_reader :track_index
+  
+  # The index of the currently selected screen
+  # Ranges from 0-3
+  attr_reader :screen_index
+  
+  # Screen index constants
   SCREEN_NOTES = 0
   SCREEN_PLAYBACK = 1
   SCREEN_PRESETS = 2
   SCREEN_FX = 3  
+    
+  # The index of the currently selected mode
+  # Ranges from 0-3
+  attr_reader :mode_index
   
+  # Mode index constants (modes have different meanings on different screens, hence the abstract names)
   MODE_GREEN = 0
   MODE_ORANGE = 1
   MODE_RED = 2
   MODE_YELLOW = 3
   
-  EMPTY_GRID = {}
+  # The index of the current transport pulse
+  # Currently this is setup to be the number of 16th notes since the beginning of the song.
+  attr_accessor :pulse_index
+  
+  
+  EMPTY_GRID = {}.freeze
   
   
   def initialize
@@ -37,9 +60,14 @@ class LaunchpadModel
   
   def set_grid_step index,value
     case @screen_index
+      when SCREEN_NOTES then  @track.set_note(index,value)
       when SCREEN_PLAYBACK then @track.set_playback(index,value)
-      else @track.set_note(index,value)
+      else error "Unsupported screen #{@screen_index} for set_grid_set" # TODO: implement preset screen
     end
+  end
+  
+  def selected_grid_index
+    @track.get_grid_index @pulse_index if @pulse_index
   end
   
   # The values for the grid (in a 64 element array) that's currently displayed.
@@ -49,7 +77,7 @@ class LaunchpadModel
     case @screen_index
       when SCREEN_NOTES then @track.notes
       when SCREEN_PLAYBACK then @track.playback
-      when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index => 2}
+      when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index+32 => 2}
       else EMPTY_GRID
     end  
   end
