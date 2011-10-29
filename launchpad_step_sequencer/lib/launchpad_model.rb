@@ -62,6 +62,7 @@ class LaunchpadModel
     @mode_index = index
   end
   
+  # when changing presets on the preset screen, this method returns a preset_param_name, preset_index pair
   def set_grid_step index,value
     case @screen_index      
       when SCREEN_NOTES 
@@ -73,8 +74,11 @@ class LaunchpadModel
       when SCREEN_PRESETS
         if index < 32
           @track.notes_preset_index = index
+          return "notes#{@track_index}", index
         else
-          @track.playback_preset_index = index-32
+          index -= 32
+          @track.playback_preset_index = index
+          return "playback#{@track_index}", index
         end
         
       else error "Unsupported screen #{@screen_index} for set_grid_set" # TODO: implement FX screen
@@ -107,6 +111,18 @@ class LaunchpadModel
       data["playback#{index}"] = track.playback
     end
     data
+  end
+  
+  def serialize_selected_grid
+    case @screen_index      
+      when SCREEN_NOTES then ["notes#{@track_index}", @track.notes_preset_index, @track.notes] 
+      when SCREEN_PLAYBACK then ["playback#{@track_index}", @track.playback_preset_index, @track.playback]
+      else error "Unsupported screen #{@screen_index} for serialize_selected_grid"
+    end
+  end
+  
+  def selected_grid_serializable?
+    @screen_index < 2
   end
   
   # deserialize a single property

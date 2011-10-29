@@ -1,9 +1,8 @@
 class LaunchpadController
 
-  def initialize model, view, note_out
-    @model = model
-    @view = view
-    @note_out = note_out
+  def initialize model, view, note_out, preset_out
+    @model,@view = model,view
+    @note_out,@preset_out = note_out,preset_out
     @button_timer = LaunchpadButtonTimer.new self
     @flam_timer = LaunchpadFlamTimer.new self
     timed_mode    
@@ -49,11 +48,17 @@ class LaunchpadController
   end
 
   def set_step index,value
-    @model.set_grid_step index,value
     if @model.presets_screen_selected?
+      preset_param_name,preset_index = @model.set_grid_step index,value
       @view.redraw_preset_grid
+      @preset_out.call 'getstoredvalue', preset_param_name, preset_index
     else
+      @model.set_grid_step index,value
       @view.redraw_step index
+      if @model.selected_grid_serializable? 
+        preset_param_name, preset_index, grid_data = *@model.serialize_selected_grid        
+        @preset_out.call 'setstoredvalue', preset_param_name, preset_index, *grid_data        
+      end
     end
   end
 

@@ -11,7 +11,7 @@ outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer 
 
 @model = LaunchpadModel.new
 @view = LaunchpadView.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
-@controller = LaunchpadController.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}
+@controller = LaunchpadController.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(*args){out3 *args}
  
 def in0 *args # note on/off
   note,velocity = *args
