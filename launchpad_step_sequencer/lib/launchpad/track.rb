@@ -3,7 +3,7 @@ class Launchpad::Track
     
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3    
-  attr_accessor :notes
+  attr_reader :notes
   
   # playback patterns control whether the steps in the corresponding note pattern
   # play normally, play a flam, are muted, or are skipped      
@@ -80,10 +80,17 @@ class Launchpad::Track
     else
       active_playback[get_grid_index(index)] = value
     end
-  end    
+  end  
+  
+  def notes= values    
+    @notes = values
+    @active_notes = nil    
+  end  
   
   def playback= values
-    values.each_with_index{|value,index| set_playback(index,value) }
+    @playback = values
+    @active_playback = nil
+    @active_indexes = nil    
   end
 
 end
