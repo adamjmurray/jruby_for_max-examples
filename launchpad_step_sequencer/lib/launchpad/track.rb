@@ -15,6 +15,8 @@ class Launchpad::Track
   #       The data for all other presets is managed in the Max patcher with the pattr system.
   attr_accessor :notes_preset_index, :playback_preset_index    
 
+  # A Hash mapping fx grid indexes to values (we don't store a whole 8x8 grid array because these tend to be very transient)
+  attr_accessor :fx
   
   # definition of values for the playback grid
   PLAYBACK_MUTE = 0
@@ -31,6 +33,7 @@ class Launchpad::Track
     @playback = Array.new(SIZE,PLAYBACK_NORMAL)
     @notes_preset_index = 0
     @playback_preset_index = 0
+    @fx = {}
   end
   
   def active_notes

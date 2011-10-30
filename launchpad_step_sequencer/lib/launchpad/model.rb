@@ -51,18 +51,34 @@ class Launchpad::Model
   end
   
   def select_screen index
+    raise "Invalid screen #{@screen_index}" if not (index >= 0 and index <= 3)
     @screen_index = index
+  end
+
+  def notes_screen_selected?
+    @screen_index == SCREEN_NOTES
+  end
+  
+  def playback_screen_selected?
+    @screen_index == SCREEN_PLAYBACK
   end
   
   def presets_screen_selected?
     @screen_index == SCREEN_PRESETS
+  end
+
+  def fx_screen_selected?
+    @screen_index == SCREEN_FX
+  end  
+  
+  def screen_supports_timed_mode?
+    @screen_index < 2
   end
   
   def select_mode index
     @mode_index = index
   end
   
-  # when changing presets on the preset screen, this method returns a preset_param_name, preset_index pair
   def set_grid_step index,value
     case @screen_index      
       when SCREEN_NOTES 
@@ -72,6 +88,7 @@ class Launchpad::Model
         @track.set_playback(index,value)
         
       when SCREEN_PRESETS
+        # when changing presets on the preset screen, this method returns a preset_param_name, preset_index pair        
         if index < 32
           @track.notes_preset_index = index
           return "notes#{@track_index}", index
@@ -80,8 +97,9 @@ class Launchpad::Model
           @track.playback_preset_index = index
           return "playback#{@track_index}", index
         end
-        
-      else error "Unsupported screen #{@screen_index} for set_grid_set" # TODO: implement FX screen
+      
+      when SCREEN_FX
+        @track.fx[index] = value      
     end
   end
   
@@ -99,7 +117,7 @@ class Launchpad::Model
       when SCREEN_NOTES then @track.notes
       when SCREEN_PLAYBACK then @track.playback
       when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index+32 => 3}
-      else EMPTY_GRID
+      when SCREEN_FX then @track.fx
     end  
   end
   

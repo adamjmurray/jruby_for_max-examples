@@ -1,8 +1,8 @@
 class Launchpad::Controller
 
-  def initialize model, view, note_out, preset_out
+  def initialize model, view, note_out, fx_out, preset_out
     @model,@view = model,view
-    @note_out,@preset_out = note_out,preset_out
+    @note_out,@fx_out,@preset_out = note_out,fx_out,preset_out
     @button_timer = Launchpad::ButtonTimer.new self
     @flam_timer = Launchpad::FlamTimer.new self
     timed_mode    
@@ -47,11 +47,11 @@ class Launchpad::Controller
     @model.grid_values[index]
   end
 
-  def set_step index,value
+  def set_step index,value    
     if @model.presets_screen_selected?
       preset_param_name,preset_index = @model.set_grid_step index,value
       @view.redraw_preset_grid
-      @preset_out.call 'getstoredvalue', preset_param_name, preset_index
+      @preset_out.call 'getstoredvalue', preset_param_name, preset_index      
     else
       @model.set_grid_step index,value
       @view.redraw_step index
@@ -59,20 +59,34 @@ class Launchpad::Controller
         preset_param_name, preset_index, grid_data = *@model.serialize_selected_grid        
         @preset_out.call 'setstoredvalue', preset_param_name, preset_index, *grid_data        
       end
+      if @model.fx_screen_selected?
+        # TODO? distinguish between different tracks?
+        pitch = index
+        velocity = (value > 0 ? 127 : 0)
+        @fx_out.call pitch,velocity
+      end
     end
   end
 
   def step_pressed index
-    if @mode_type == :timed
-      @button_timer.step_pressed index
+    if @model.screen_supports_timed_mode?
+      if @mode_type == :timed
+        @button_timer.step_pressed index
+      else
+        value = ( get_step(index) == @mode_type ? 0 : @mode_type )
+        set_step index,value
+      end
     else
-      value = ( get_step(index) == @mode_type ? 0 : @mode_type )
-      set_step index,value
+      set_step index,1
     end
   end
   
-  def step_released index  
-    @button_timer.step_released index if @mode_type == :timed    
+  def step_released index
+    if @model.fx_screen_selected?
+      set_step index,0
+    elsif @mode_type == :timed
+      @button_timer.step_released index      
+    end
   end
   
   def pulse bars,beats,units

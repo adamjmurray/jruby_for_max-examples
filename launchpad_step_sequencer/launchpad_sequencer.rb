@@ -1,10 +1,10 @@
 require 'lib/launchpad'
-inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'model load'
-outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'model dump'
+inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'preset in (from pattrstorage)'
+outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'fx out', 'preset out (to pattrstorage)'
 
 @model = Launchpad::Model.new
 @view = Launchpad::View.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
-@controller = Launchpad::Controller.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(*args){out3 *args}
+@controller = Launchpad::Controller.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(pitch,velocity){out3 pitch,velocity}, ->(*args){out4 *args}
  
 # note on/off 
 def in0 *args 
@@ -29,9 +29,9 @@ def in1 *args
   cc,val = *args  
   if val > 0
     index = cc-104
-    if index < 3 # only 3 screens so far
+    if index < 4
       @controller.screen = index
-    elsif index > 3
+    else
       @controller.mode = index-4
     end
   end
@@ -64,8 +64,8 @@ def init_pattrstorage
   default_playback_grid = [Launchpad::Track::PLAYBACK_NORMAL]*64
   for preset_number in 0..31
     for track_index in 0..7
-      out3 'setstoredvalue', "notes#{track_index}", preset_number, *default_note_grid
-      out3 'setstoredvalue', "playback#{track_index}", preset_number, *default_playback_grid      
+      out4 'setstoredvalue', "notes#{track_index}", preset_number, *default_note_grid
+      out4 'setstoredvalue', "playback#{track_index}", preset_number, *default_playback_grid      
     end
   end
 end
