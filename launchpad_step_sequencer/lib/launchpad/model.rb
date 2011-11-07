@@ -148,8 +148,19 @@ class Launchpad::Model
     case name
        when /notes([0-7])/ then @tracks[$1.to_i].notes = value
        when /playback([0-7])/ then @tracks[$1.to_i].playback = value
-       else error "invalid model element: #{elemen}"
+       else error "invalid model element: #{name}"
     end    
+  end
+  
+  def to_json(*args)    	
+    data = {note_patterns: @note_patterns, playback_patterns: @playback_patterns}  	  	
+    data.to_json(*args)
+  end
+
+  def from_json json
+    data = JSON.parse json, symbolize_names: true
+    data[:note_patterns].each_with_index{|grid,index| @note_patterns[index].grid = grid }
+    data[:playback_patterns].each_with_index{|grid,index| @playback_patterns[index].grid = grid }  
   end
   
 end

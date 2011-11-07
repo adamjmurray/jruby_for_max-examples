@@ -51,13 +51,13 @@ class Launchpad::Controller
     if @model.presets_screen_selected?
       preset_param_name,preset_index = @model.set_grid_step index,value
       @view.redraw_preset_grid
-      @preset_out.call 'getstoredvalue', preset_param_name, preset_index      
+      @preset_out.call 'getstoredvalue', preset_param_name, preset_index+1     
     else
       @model.set_grid_step index,value
       @view.redraw_step index
       if @model.selected_grid_serializable? 
         preset_param_name, preset_index, grid_data = *@model.serialize_selected_grid        
-        @preset_out.call 'setstoredvalue', preset_param_name, preset_index, *grid_data        
+        @preset_out.call 'setstoredvalue', preset_param_name, preset_index+1, *grid_data        
       end
       if @model.fx_screen_selected?
         # TODO? distinguish between different tracks?

@@ -1,13 +1,18 @@
 # The model state for a single track
 class Launchpad::Track
-    
+  
+  # The current note pattern.  
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3    
   attr_reader :notes
   
+  # The current playback pattern
   # playback patterns control whether the steps in the corresponding note pattern
   # play normally, play a flam, are muted, or are skipped      
   attr_reader :playback
+  
+  # All pattern presets
+  attr_reader :note_presets, :playback_presets  
 
   # Indexes for the currently selected notes and playback presets.
   # There are 32 presets for each per track (the 8x8 grid is used for both notes and playback presets for a track)
@@ -28,7 +33,7 @@ class Launchpad::Track
   PRESETS = 32
   
   
-  def initialize
+  def initialize    
     @notes = Array.new(SIZE,0)    
     @playback = Array.new(SIZE,PLAYBACK_NORMAL)
     @notes_preset_index = 0

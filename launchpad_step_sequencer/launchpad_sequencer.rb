@@ -44,29 +44,17 @@ end
 
 # pattrstorage input
 def in3 *data
-  if data.first == 'dump' # dump of all values is done
-    @view.redraw_grid
+  if data.first == 'dump'
+     # dump of all values is done
+    @view.redraw_grid    
+    
+  elsif data.first == 'read'
+    # we read a new presets file, so load the first preset    
+    sync_preset! 1    
+  
   else    
     property_name = data.shift # first element is the property name (standard pattr message format)    
     @model.deserialize_property property_name,data
-  end
-end
-
-# def dump
-#   preset_number = 1 # TODO: support different preset slots
-#   for param,value in @model.serialize
-#     out3 'setstoredvalue', param, preset_number, *value
-#   end
-# end
-
-def init_pattrstorage
-  default_note_grid = [0]*64
-  default_playback_grid = [Launchpad::Track::PLAYBACK_NORMAL]*64
-  for preset_number in 0..31
-    for track_index in 0..7
-      out4 'setstoredvalue', "notes#{track_index}", preset_number, *default_note_grid
-      out4 'setstoredvalue', "playback#{track_index}", preset_number, *default_playback_grid      
-    end
   end
 end
 
@@ -78,5 +66,24 @@ end
 # used to undo the "all notes off" message automatically send by Ableton Live to all MIDI hardware
 def reset_lights
   @view.redraw
-end 
+end
 
+def reset_presets
+  default_note_grid = [0]*64
+  default_playback_grid = [Launchpad::Track::PLAYBACK_NORMAL]*64
+  for track_index in 0..7
+    out4 'store', "notes#{track_index}", preset_number, *default_note_grid
+    out4 'store', "playback#{track_index}", preset_number, *default_playback_grid      
+    for preset_number in 1..32
+      out4 'setstoredvalue', "notes#{track_index}", preset_number, *default_note_grid
+      out4 'setstoredvalue', "playback#{track_index}", preset_number, *default_playback_grid            
+    end
+  end
+end
+
+def sync_preset! preset_number
+  out4 'recall', preset_number
+  out4 'dump'
+end
+
+sync_preset! 1
