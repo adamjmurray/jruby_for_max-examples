@@ -39,11 +39,14 @@ class Launchpad::Track
   def select_note_pattern index
     @note_pattern = @note_patterns[index]
     @note_pattern_index = index
+    @active_notes = nil
   end
 
   def select_playback_pattern index
     @playback_pattern = @playback_patterns[index]
     @playback_pattern_index = index
+    @active_playback = nil
+    @active_indexes = nil
   end
   
   
