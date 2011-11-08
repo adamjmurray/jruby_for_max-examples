@@ -1,13 +1,18 @@
 require 'lib/launchpad'
-inlet_assist 'from launchpad note on', 'from launchpad control change', 'transport time (bars beats units)', 'preset in (from pattrstorage)'
-outlet_assist 'to launchpad note on', 'to launchpad control change', 'sequencer out', 'fx out', 'preset out (to pattrstorage)'
+inlet_assist 'launchpad note in', 'launchpad CC in', 'transport time (bars beats units)', 'load JSON'
+outlet_assist 'launchpad note out', 'launchpad CC out', 'sequencer out', 'fx out', 'save JSON'
 
 @model = Launchpad::Model.new
-@view = Launchpad::View.new @model, ->(pitch,velocity){out0 pitch,velocity}, ->(cc_number,value){out1 cc_number,value}
-@controller = Launchpad::Controller.new @model, @view, ->(pitch,velocity){out2 pitch,velocity}, ->(pitch,velocity){out3 pitch,velocity}, ->(*args){out4 *args}
+@view = Launchpad::View.new @model, 
+        ->(pitch,velocity) { out0 pitch,velocity }, # launchpad note out 
+        ->(cc_number,value){ out1 cc_number,value } # launchpad CC out
+
+@controller = Launchpad::Controller.new @model, @view, 
+              ->(pitch,velocity){ out2 pitch,velocity }, # sequencer out
+              ->(pitch,velocity){ out3 pitch,velocity }, # fx out
+              ->(json){ out4 json } # save JSON
  
-# note on/off 
-def in0 *args 
+def in0 *args # launchpad note in 
   note,velocity = *args
   x = note % 16
   y = note / 16  
@@ -24,8 +29,7 @@ def in0 *args
   end
 end 
 
-# control change (top row)
-def in1 *args 
+def in1 *args # launchpad CC in
   cc,val = *args  
   if val > 0
     index = cc-104
@@ -37,13 +41,11 @@ def in1 *args
   end
 end 
  
-# metro input in [bars, beats, units]
-def in2 *args
+def in2 *args # transport time (bars beats units)
   @controller.pulse *args
 end
 
-# pattrstorage input
-def in3 *data
+def in3 *data # load JSON
   if data.first == 'dump'
      # dump of all values is done
     @view.redraw_grid    

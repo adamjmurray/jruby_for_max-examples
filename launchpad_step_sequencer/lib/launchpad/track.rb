@@ -29,8 +29,8 @@ class Launchpad::Track
   
   
   def initialize
-    @note_patterns = Array.new(PRESETS) { Launchpad::Pattern.new }    
-    @playback_patterns = Array.new(PRESETS) { Launchpad::PlaybackPattern.new }    
+    @note_patterns = Array.new(PATTERNS) { Launchpad::Pattern.new }    
+    @playback_patterns = Array.new(PATTERNS) { Launchpad::PlaybackPattern.new }    
     select_note_pattern 0
     select_playback_pattern 0
     @fx = {}
@@ -38,7 +38,7 @@ class Launchpad::Track
   
   def select_note_pattern index
     @note_pattern = @note_patterns[index]
-    @note_preset_index = index
+    @note_pattern_index = index
   end
 
   def select_playback_pattern index
@@ -76,7 +76,7 @@ class Launchpad::Track
   end
   
   def set_note(index,value)
-    @notes[index] = value
+    @note_pattern[index] = value
     active_notes[get_grid_index(index)] = value
   end
 

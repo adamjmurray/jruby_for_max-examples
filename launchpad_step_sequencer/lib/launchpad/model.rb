@@ -17,7 +17,7 @@ class Launchpad::Model
   # Screen index constants
   SCREEN_NOTES = 0
   SCREEN_PLAYBACK = 1
-  SCREEN_PRESETS = 2
+  SCREEN_PATTERNS = 2
   SCREEN_FX = 3  
     
   # The index of the currently selected mode
@@ -63,8 +63,8 @@ class Launchpad::Model
     @screen_index == SCREEN_PLAYBACK
   end
   
-  def presets_screen_selected?
-    @screen_index == SCREEN_PRESETS
+  def patterns_screen_selected?
+    @screen_index == SCREEN_PATTERNS
   end
 
   def fx_screen_selected?
@@ -87,15 +87,11 @@ class Launchpad::Model
       when SCREEN_PLAYBACK 
         @track.set_playback(index,value)
         
-      when SCREEN_PRESETS
-        # when changing presets on the preset screen, this method returns a preset_param_name, preset_index pair        
+      when SCREEN_PATTERNS
         if index < 32
-          @track.notes_preset_index = index
-          return "notes#{@track_index}", index
+          @track.select_note_pattern(index)
         else
-          index -= 32
-          @track.playback_preset_index = index
-          return "playback#{@track_index}", index
+          @track.select_playback_pattern(index-32)
         end
       
       when SCREEN_FX
@@ -114,9 +110,9 @@ class Launchpad::Model
   # OR a Hash that maps active button indexes to values
   def grid_values
     case @screen_index
-      when SCREEN_NOTES then @track.notes
-      when SCREEN_PLAYBACK then @track.playback
-      when SCREEN_PRESETS then {@track.notes_preset_index => 1, @track.playback_preset_index+32 => 3}
+      when SCREEN_NOTES then @track.note_pattern
+      when SCREEN_PLAYBACK then @track.playback_pattern
+      when SCREEN_PATTERNS then {@track.note_pattern_index => 1, @track.playback_pattern_index+32 => 3}
       when SCREEN_FX then @track.fx
     end  
   end
@@ -125,16 +121,16 @@ class Launchpad::Model
   def serialize
     data = {}
     @tracks.each_with_index do |track,index|
-      data["notes#{index}"] = track.notes
-      data["playback#{index}"] = track.playback
+      data["notes#{index}"] = track.note_pattern
+      data["playback#{index}"] = track.playback_pattern
     end
     data
   end
   
   def serialize_selected_grid
     case @screen_index      
-      when SCREEN_NOTES then ["notes#{@track_index}", @track.notes_preset_index, @track.notes] 
-      when SCREEN_PLAYBACK then ["playback#{@track_index}", @track.playback_preset_index, @track.playback]
+      when SCREEN_NOTES then ["notes#{@track_index}", @track.note_pattern_index, @track.note_pattern] 
+      when SCREEN_PLAYBACK then ["playback#{@track_index}", @track.playback_pattern_index, @track.playback_pattern]
       else error "Unsupported screen #{@screen_index} for serialize_selected_grid"
     end
   end

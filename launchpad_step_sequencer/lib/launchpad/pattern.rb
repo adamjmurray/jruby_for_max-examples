@@ -17,6 +17,10 @@ class Launchpad::Pattern
     @values[index % @length] = value    
   end
   
+  def select
+    @values.select
+  end
+  
   def to_a
     @values.clone
   end

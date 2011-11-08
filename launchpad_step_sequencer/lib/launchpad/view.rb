@@ -48,7 +48,7 @@ class Launchpad::View < Launchpad::Adapter
   
   def redraw_grid
     grid_values = @model.grid_values
-    @preset_grid_values = grid_values if @model.presets_screen_selected?
+    @preset_grid_values = grid_values if @model.patterns_screen_selected?
     @selected_grid_index = @model.selected_grid_index
     64.times{|index| redraw_step index, grid_values, @selected_grid_index }
   end
