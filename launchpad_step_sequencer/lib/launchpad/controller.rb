@@ -96,8 +96,8 @@ class Launchpad::Controller
         pitch = track_index
         velocity = 127 - (3- note_value)*40 # convert note values in range 0-3 to a velocity in the range 0-127        
         case track.get_playback(pulse_index)
-          when Launchpad::Track::PLAYBACK_NORMAL then note_out pitch,velocity            
-          when Launchpad::Track::PLAYBACK_FLAM  then @flam_timer.flam pitch,velocity
+          when Launchpad::PlaybackPattern::NORMAL then note_out pitch,velocity            
+          when Launchpad::PlaybackPattern::FLAM  then @flam_timer.flam pitch,velocity
         end
       end      
     end
