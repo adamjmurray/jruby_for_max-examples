@@ -1,5 +1,8 @@
 class Launchpad::Model
-
+  
+  # The number of tracks
+  TRACKS = 8
+  
   # The list of tracks in the model
   attr_reader :tracks
 
@@ -33,13 +36,13 @@ class Launchpad::Model
   # The index of the current transport pulse
   # Currently this is setup to be the number of 16th notes since the beginning of the song.
   attr_accessor :pulse_index
-  
+
   
   EMPTY_GRID = {}.freeze
   
   
   def initialize
-    @tracks = Array.new(8) { Launchpad::Track.new }
+    @tracks = Array.new(TRACKS) { Launchpad::Track.new }
     select_track 0
     @screen_index = SCREEN_NOTES
     @mode_index = MODE_YELLOW
@@ -117,46 +120,13 @@ class Launchpad::Model
     end  
   end
   
-  # serialize all persistable state in the model to a Hash mapping model property to a list of numbers
-  def serialize
-    data = {}
-    @tracks.each_with_index do |track,index|
-      data["notes#{index}"] = track.note_pattern
-      data["playback#{index}"] = track.playback_pattern
-    end
-    data
-  end
-  
-  def serialize_selected_grid
-    case @screen_index      
-      when SCREEN_NOTES then ["notes#{@track_index}", @track.note_pattern_index, @track.note_pattern] 
-      when SCREEN_PLAYBACK then ["playback#{@track_index}", @track.playback_pattern_index, @track.playback_pattern]
-      else error "Unsupported screen #{@screen_index} for serialize_selected_grid"
-    end
-  end
-  
-  def selected_grid_serializable?
-    @screen_index < 2
-  end
-  
-  # deserialize a single property
-  def deserialize_property name,value
-    case name
-       when /notes([0-7])/ then @tracks[$1.to_i].notes = value
-       when /playback([0-7])/ then @tracks[$1.to_i].playback = value
-       else error "invalid model element: #{name}"
-    end    
-  end
-  
-  def to_json(*args)    	
-    data = {note_patterns: @note_patterns, playback_patterns: @playback_patterns}  	  	
-    data.to_json(*args)
+  def to_json(*options)    	
+    @tracks.to_json(*options)
   end
 
   def from_json json
     data = JSON.parse json, symbolize_names: true
-    data[:note_patterns].each_with_index{|grid,index| @note_patterns[index].grid = grid }
-    data[:playback_patterns].each_with_index{|grid,index| @playback_patterns[index].grid = grid }  
+    @tracks = data.map{|track_data| Launchpad::Track.from_hash track_data }
   end
   
 end

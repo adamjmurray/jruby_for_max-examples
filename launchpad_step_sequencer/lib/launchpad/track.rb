@@ -28,9 +28,9 @@ class Launchpad::Track
   attr_accessor :fx
   
   
-  def initialize
-    @note_patterns = Array.new(PATTERNS) { Launchpad::Pattern.new }    
-    @playback_patterns = Array.new(PATTERNS) { Launchpad::PlaybackPattern.new }    
+  def initialize options={}
+    @note_patterns = options[:note_patterns] || Array.new(PATTERNS) { Launchpad::Pattern.new }    
+    @playback_patterns = options[:playback_patterns] || Array.new(PATTERNS) { Launchpad::PlaybackPattern.new }    
     select_note_pattern 0
     select_playback_pattern 0
     @fx = {}
@@ -96,6 +96,19 @@ class Launchpad::Track
     @playback = values
     @active_playback = nil
     @active_indexes = nil    
+  end
+  
+  def to_json(*options)
+    {
+      note_patterns: @note_patterns,
+      playback_patterns: @playback_patterns
+    }.to_json(*options)
+  end
+
+  def self.from_hash data
+    note_patterns = data[:note_patterns].map{|pattern_data| Launchpad::Pattern.from_a pattern_data }
+    playback_patterns = data[:playback_patterns].map{|pattern_data| Launchpad::PlaybackPattern.from_a pattern_data }    
+    new note_patterns: note_patterns, playback_patterns: playback_patterns
   end
 
 end

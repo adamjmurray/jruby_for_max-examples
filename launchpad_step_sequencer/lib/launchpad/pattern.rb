@@ -3,6 +3,8 @@ class Launchpad::Pattern
     
   DEFAULT_LENGTH = 64
   
+  attr_reader :values
+  
   def initialize(values=nil)
     # A 64-element array that contains all the values for the pattern
     @values = values ? values.to_a : Array.new(DEFAULT_LENGTH,0)    
@@ -21,20 +23,14 @@ class Launchpad::Pattern
     @values.select
   end
   
-  def to_a
-    @values.clone
-  end
+  alias to_a values
 
   def self.from_a values
     new values
   end
-
-  def to_json *args
-    @values.to_json(*args)
-  end
   
-  def self.from_json json
-    new JSON.parse(json)
+  def to_json(*options)
+    @values.to_json(*options)
   end
     
 end

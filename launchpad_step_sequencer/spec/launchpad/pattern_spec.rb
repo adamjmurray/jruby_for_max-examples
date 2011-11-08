@@ -50,17 +50,4 @@ describe Launchpad::Pattern do
     end    
   end
   
-  describe "#to_json" do
-    it "converts the values array to JSON" do
-      subject.to_json.should == subject.to_a.to_s.gsub(' ', '')
-    end
-  end
-  
-  describe "#from_json" do
-    it "constructs a new object from a JSON string" do
-      pattern = Launchpad::Pattern.from_json "[0,1,2,3,4,5]"
-      pattern.to_a.should == [0,1,2,3,4,5]
-    end
-  end
-  
 end
