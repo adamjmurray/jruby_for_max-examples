@@ -42,10 +42,14 @@ class Launchpad::Model
   
   
   def initialize
+    reset
+  end
+  
+  def reset
     @tracks = Array.new(TRACKS) { Launchpad::Track.new }
     select_track 0
     @screen_index = SCREEN_NOTES
-    @mode_index = MODE_YELLOW
+    @mode_index = MODE_YELLOW    
   end
   
   def select_track index

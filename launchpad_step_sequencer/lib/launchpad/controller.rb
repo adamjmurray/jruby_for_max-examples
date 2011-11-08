@@ -1,8 +1,8 @@
 class Launchpad::Controller
 
-  def initialize model, view, note_out, fx_out, preset_out
+  def initialize model, view, note_out, fx_out 
     @model,@view = model,view
-    @note_out,@fx_out,@preset_out = note_out,fx_out,preset_out
+    @note_out,@fx_out = note_out,fx_out
     @button_timer = Launchpad::ButtonTimer.new self
     @flam_timer = Launchpad::FlamTimer.new self
     timed_mode    
