@@ -46,6 +46,41 @@ describe Launchpad::PlaybackPattern do
     end    
   end
   
+  describe "#active_values" do
+    it "is all the non-skip values" do
+      pattern = Launchpad::PlaybackPattern.new [normal,mute,skip,flam,normal]
+      pattern.active_values.should == [normal,mute,flam,normal]
+    end
+  end
+  
+  describe "#active_index?" do
+    it "returns true when the value at the index is not a skip" do
+      pattern = Launchpad::PlaybackPattern.new [normal,mute,skip,flam,normal]
+      [0,1,3,4].each do |index|    
+        pattern.active_index?(index).should be_true
+      end
+    end
+    
+    it "returns false when the value at the index is a skip" do
+      pattern = Launchpad::PlaybackPattern.new [normal,mute,skip,flam,normal]
+      pattern.active_index?(2).should be_false
+    end    
+  end
+
+  describe "#nth_active_index" do
+    it "is the same as the argument when there is no skip value at or before the given index" do
+      pattern = Launchpad::PlaybackPattern.new [normal,mute,skip,flam,normal]
+      pattern.nth_active_index(0).should == 0
+      pattern.nth_active_index(1).should == 1      
+    end
+    
+    it "is the offset from the begining of the pattern, not counting skip values" do
+      pattern = Launchpad::PlaybackPattern.new [normal,mute,skip,flam,skip,normal]
+      pattern.nth_active_index(2).should == 3
+      pattern.nth_active_index(3).should == 5
+    end
+  end  
+  
   describe "#[]=" do
     it "assigns values to the given pattern index" do
       subject[2] = 10

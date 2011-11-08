@@ -1,60 +1,62 @@
-# The model state for a single track
+# The model for a single track.
+# Each track stores multiple note and playback patterns, and an fx pattern.
 class Launchpad::Track
+  
+  # Number of different patterns of each type (note/playback)
+  PATTERNS = 32  
   
   # The current note pattern.  
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
   # where each value in the matrix is an int ranging from 0-3    
-  attr_reader :notes
+  attr_reader :note_pattern
   
   # The current playback pattern
   # playback patterns control whether the steps in the corresponding note pattern
   # play normally, play a flam, are muted, or are skipped      
-  attr_reader :playback
+  attr_reader :playback_pattern
   
-  # All pattern presets
-  attr_reader :note_presets, :playback_presets  
+  # All patterns
+  attr_reader :note_patterns, :playback_patterns
 
   # Indexes for the currently selected notes and playback presets.
   # There are 32 presets for each per track (the 8x8 grid is used for both notes and playback presets for a track)
   # Note: The notes and playback arrays only contain the data for the current preset. 
   #       The data for all other presets is managed in the Max patcher with the pattr system.
-  attr_accessor :notes_preset_index, :playback_preset_index    
+  attr_accessor :note_pattern_index, :playback_pattern_index    
 
   # A Hash mapping fx grid indexes to values (we don't store a whole 8x8 grid array because these tend to be very transient)
   attr_accessor :fx
   
-  # definition of values for the playback grid
-  PLAYBACK_MUTE = 0
-  PLAYBACK_NORMAL = 1
-  PLAYBACK_FLAM = 2
-  PLAYBACK_SKIP = 3
   
-  SIZE = 64
-  PRESETS = 32
-  
-  
-  def initialize    
-    @notes = Array.new(SIZE,0)    
-    @playback = Array.new(SIZE,PLAYBACK_NORMAL)
-    @notes_preset_index = 0
-    @playback_preset_index = 0
+  def initialize
+    @note_patterns = Array.new(PRESETS) { Launchpad::Pattern.new }    
+    @playback_patterns = Array.new(PRESETS) { Launchpad::PlaybackPattern.new }    
+    select_note_pattern 0
+    select_playback_pattern 0
     @fx = {}
   end
   
+  def select_note_pattern index
+    @note_pattern = @note_patterns[index]
+    @note_preset_index = index
+  end
+
+  def select_playback_pattern index
+    @playback_pattern = @playback_patterns[index]
+    @playback_pattern_index = index
+  end
+  
+  
   def active_notes
-    @active_notes ||= @notes.select.with_index{|_,index| @playback[index] != PLAYBACK_SKIP }
+    @active_notes ||= @note_pattern.select.with_index{|_,index| @playback_pattern.active_index? index }
   end
 
   def active_playback
-    @active_playback ||= @playback.select{|value| value != PLAYBACK_SKIP }
+    @playback_pattern.active_values
   end
   
   def active_indexes
-    @active_indexes ||= (
-      active_index = []
-      SIZE.times{|index| active_index << index if @playback[index] != PLAYBACK_SKIP } 
-      active_index
-    )
+    @playback_pattern.active_indexes
   end
   
   # get the note value at the given index, filtering out any notes with a corresponding playback value of SKIP
@@ -79,14 +81,9 @@ class Launchpad::Track
   end
 
   def set_playback(index,value)
-    old_value = @playback[index]
-    @playback[index] = value
-    if value == PLAYBACK_SKIP or old_value == PLAYBACK_SKIP
+    if @playback_pattern[index] = value
+      # need to invalidate active cache
       @active_notes = nil
-      @active_playback = nil
-      @active_indexes = nil
-    else
-      active_playback[get_grid_index(index)] = value
     end
   end  
   
