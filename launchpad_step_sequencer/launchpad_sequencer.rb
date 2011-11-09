@@ -24,7 +24,7 @@ def in0 *args # launchpad note in
     else
       @controller.step_pressed grid_index
     end
-  else
+  elsif x <= 7
     @controller.step_released grid_index
   end
 end 
@@ -47,6 +47,7 @@ end
 
 def in3 json # load JSON
   @model.from_json json
+  reset_lights
 end
 
 def dump
@@ -63,8 +64,6 @@ def reset
   reset_lights
 end
 
-# set all the lights on the launchpad hardware for the current state
-# used to undo the "all notes off" message automatically send by Ableton Live to all MIDI hardware
 def reset_lights
   @view.redraw
 end

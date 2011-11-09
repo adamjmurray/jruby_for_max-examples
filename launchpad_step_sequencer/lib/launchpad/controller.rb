@@ -49,8 +49,12 @@ class Launchpad::Controller
 
   def set_step index,value    
     if @model.patterns_screen_selected?
-      @model.set_grid_step index,value
-      @view.redraw_patterns_grid
+      track = @model.tracks[index/8]   
+      pattern_index = index % 8   
+      track.select_note_pattern pattern_index
+      track.select_playback_pattern pattern_index
+      @view.redraw_grid
+      
     else
       @model.set_grid_step index,value
       @view.redraw_step index

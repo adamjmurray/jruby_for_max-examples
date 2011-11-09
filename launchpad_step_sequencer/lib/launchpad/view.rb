@@ -46,25 +46,29 @@ class Launchpad::View < Launchpad::Adapter
     redraw_step index, grid_values, selected_grid_index if index
   end
   
-  def redraw_grid
-    grid_values = @model.grid_values
+  def redraw_grid    
     @selected_grid_index = @model.selected_grid_index
-    colors = if grid_values.is_a? Hash
-      @parameter_grid_values = grid_values      
-      Launchpad::Pattern::EMPTY.map.with_index{|c,index| color_for(grid_values[index] || c) }
+    
+    if @model.patterns_screen_selected?
+      colors = []     
+      for track in @model.tracks
+        track_colors = Array.new(Launchpad::Track::PATTERNS, 0)      
+        track_colors[track.note_pattern_index] =  color_for(1)
+        # TODO track_colors[track.playback_pattern_index+32 => 3
+        colors += track_colors          
+      end
+      
+    elsif @model.fx_screen_selected?
+      colors = Array.new(Launchpad::Pattern::EMPTY)
+      for index,value in @model.grid_values      
+        colors[index] = color_for(value)
+      end
+      
     else
-      grid_values.map.with_index{|value,index| color_for(value, index==@selected_grid_index) }     
+      colors =  @model.grid_values.map.with_index{|value,index| color_for(value, index==@selected_grid_index) }     
     end
+    
     grid colors 
-  end
-  
-  def redraw_patterns_grid
-    prev_parameter_grid_values = @parameter_grid_values
-    @parameter_grid_values = @model.grid_values
-    if prev_parameter_grid_values
-      prev_parameter_grid_values.keys.each{|index| redraw_step index, @parameter_grid_values, nil }
-    end
-    @parameter_grid_values.keys.each{|index| redraw_step index, @parameter_grid_values, nil }
   end
   
   def redraw_step index, grid_values=@model.grid_values, selected_grid_index=@model.selected_grid_index        

@@ -3,7 +3,7 @@
 class Launchpad::Track
   
   # Number of different patterns of each type (note/playback)
-  PATTERNS = 32  
+  PATTERNS = 8  
   
   # The current note pattern.  
   # each note pattern is an 8x8 matrix representing the launchpad grid, 
@@ -37,19 +37,20 @@ class Launchpad::Track
   end
   
   def select_note_pattern index
+    index %= PATTERNS    
     @note_pattern = @note_patterns[index]
     @note_pattern_index = index
     @active_notes = nil
   end
 
   def select_playback_pattern index
+    index %= PATTERNS    
     @playback_pattern = @playback_patterns[index]
     @playback_pattern_index = index
-    @active_playback = nil
     @active_indexes = nil
+    @active_notes = nil    
   end
-  
-  
+    
   def active_notes
     @active_notes ||= @note_pattern.select.with_index{|_,index| @playback_pattern.active_index? index }
   end
@@ -97,8 +98,8 @@ class Launchpad::Track
   
   def playback= values
     @playback = values
-    @active_playback = nil
     @active_indexes = nil    
+    @active_notes = nil    
   end
   
   def to_json(*options)

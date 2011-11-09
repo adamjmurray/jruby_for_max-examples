@@ -131,6 +131,7 @@ class Launchpad::Model
   def from_json json
     data = JSON.parse json, symbolize_names: true
     @tracks = data.map{|track_data| Launchpad::Track.from_hash track_data }
+    select_track @track_index
   end
   
 end
