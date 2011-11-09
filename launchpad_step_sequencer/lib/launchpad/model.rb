@@ -117,8 +117,8 @@ class Launchpad::Model
   # OR a Hash that maps active button indexes to values
   def grid_values
     case @screen_index
-      when SCREEN_NOTES then @track.note_pattern
-      when SCREEN_PLAYBACK then @track.playback_pattern
+      when SCREEN_NOTES then @track.note_pattern.values
+      when SCREEN_PLAYBACK then @track.playback_pattern.values
       when SCREEN_PATTERNS then {@track.note_pattern_index => 1, @track.playback_pattern_index+32 => 3}
       when SCREEN_FX then @track.fx
     end  

@@ -1,8 +1,9 @@
 class Launchpad::Adapter
   
-  def initialize(note_on_sender, control_change_sender)
+  def initialize(note_on_sender, control_change_sender, grid_sender)
     @note_on_sender = note_on_sender
     @control_change_sender = control_change_sender
+    @grid_sender = grid_sender
   end
   
   def note_on(pitch,velocity)
@@ -13,15 +14,22 @@ class Launchpad::Adapter
     @control_change_sender.call number,value
   end
   
-  def grid x,y,color=3
+  # set one button on the grid
+  def grid_button x,y,color=3
     x = clip(x,0,8)
     y = clip(y,0,7)
     c = color_value(color)
     note_on(16*y + x, c)
   end
+  
+  # set the entire grid
+  # colors should be an array of 64 color (velocity) values
+  def grid colors
+    @grid_sender.call colors
+  end
 
   def right index,color=3
-    grid 8,index,color
+    grid_button 8,index,color
   end
 
   def top index,color=3

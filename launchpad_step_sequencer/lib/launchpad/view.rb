@@ -1,7 +1,7 @@
 class Launchpad::View < Launchpad::Adapter
 
-  def initialize(model, note_on_sender, control_change_sender)
-    super note_on_sender, control_change_sender
+  def initialize(model, note_on_sender, control_change_sender, grid_sender)
+    super note_on_sender, control_change_sender, grid_sender
     @model = model
     all_off
     redraw
@@ -48,41 +48,39 @@ class Launchpad::View < Launchpad::Adapter
   
   def redraw_grid
     grid_values = @model.grid_values
-    @preset_grid_values = grid_values if @model.patterns_screen_selected?
+    @parameter_grid_values = grid_values if @model.patterns_screen_selected?
     @selected_grid_index = @model.selected_grid_index
-    64.times{|index| redraw_step index, grid_values, @selected_grid_index }
+    grid grid_values.map.with_index{|value,index| color_value(color_for(value, index==@selected_grid_index)) } 
   end
   
-  def redraw_preset_grid
-    prev_preset_grid_values = @preset_grid_values
-    @preset_grid_values = @model.grid_values
-    if prev_preset_grid_values
-      prev_preset_grid_values.keys.each{|index| redraw_step index, @preset_grid_values, nil }
+  def redraw_patterns_grid
+    prev_parameter_grid_values = @parameter_grid_values
+    @parameter_grid_values = @model.grid_values
+    if prev_parameter_grid_values
+      prev_parameter_grid_values.keys.each{|index| redraw_step index, @parameter_grid_values, nil }
     end
-    @preset_grid_values.keys.each{|index| redraw_step index, @preset_grid_values, nil }
+    @parameter_grid_values.keys.each{|index| redraw_step index, @parameter_grid_values, nil }
   end
   
   def redraw_step index, grid_values=@model.grid_values, selected_grid_index=@model.selected_grid_index        
     x = (index % 8)
-    y = (index / 8)
-    
-    g,r = color_for grid_values[index]    
-    if index == selected_grid_index
-      g += 1
-      r += 1
-    end  
-    color = [g,r]
-    
-    grid x,y,color
+    y = (index / 8)    
+    color = color_for(grid_values[index], index==selected_grid_index)  
+    grid_button x,y,color
   end
   
-  def color_for value
+  def color_for value, selected=false
     case value
-      when 1 then [2,0]
-      when 2 then [1,2]
-      when 3 then [0,2]
-      else [0,0]
+      when 1 then g,r = 2,0
+      when 2 then g,r = 1,2
+      when 3 then g,r = 0,2
+      else g,r = 0,0
     end
+    if selected
+      g += 1
+      r += 1
+    end
+    [g,r]
   end
   
 end

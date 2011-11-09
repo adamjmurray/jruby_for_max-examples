@@ -50,7 +50,7 @@ class Launchpad::Controller
   def set_step index,value    
     if @model.patterns_screen_selected?
       @model.set_grid_step index,value
-      @view.redraw_preset_grid
+      @view.redraw_patterns_grid
     else
       @model.set_grid_step index,value
       @view.redraw_step index

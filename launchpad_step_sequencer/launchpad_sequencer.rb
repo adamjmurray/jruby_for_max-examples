@@ -1,15 +1,16 @@
 require 'lib/launchpad'
 inlet_assist 'launchpad note in', 'launchpad CC in', 'transport time (bars beats units)', 'load JSON'
-outlet_assist 'launchpad note out', 'launchpad CC out', 'sequencer out', 'fx out', 'save JSON'
+outlet_assist 'launchpad note out', 'launchpad CC out', 'launchpad grid out', 'sequencer out', 'fx out', 'save JSON'
 
 @model = Launchpad::Model.new
 @view = Launchpad::View.new @model, 
         ->(pitch,velocity) { out0 pitch,velocity }, # launchpad note out 
-        ->(cc_number,value){ out1 cc_number,value } # launchpad CC out
+        ->(cc_number,value){ out1 cc_number,value }, # launchpad CC out
+        ->(values){ out2 *values } # launchpad grid out
 
 @controller = Launchpad::Controller.new @model, @view, 
-              ->(pitch,velocity){ out2 pitch,velocity }, # sequencer out
-              ->(pitch,velocity){ out3 pitch,velocity } # fx out
+              ->(pitch,velocity){ out3 pitch,velocity }, # sequencer out
+              ->(pitch,velocity){ out4 pitch,velocity } # fx out
  
 def in0 *args # launchpad note in 
   note,velocity = *args
@@ -49,7 +50,7 @@ def in3 json # load JSON
 end
 
 def dump
-  out4 @model.to_json
+  out5 @model.to_json
 end
 alias save dump
 
