@@ -1,6 +1,6 @@
 # Handles updating button state when in "timed" mode where holding a button longer increase it's value
 class Launchpad::ButtonTimer
-  BUTTON_HOLD_RATE = 0.33 # every third of a second the button is held, the value increases
+  BUTTON_HOLD_RATE = 0.25 # every 1/4 second the button is held, the value increases
 
   def initialize controller
     @controller = controller

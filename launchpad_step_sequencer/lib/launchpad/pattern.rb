@@ -3,11 +3,13 @@ class Launchpad::Pattern
     
   DEFAULT_LENGTH = 64
   
+  EMPTY = Array.new(DEFAULT_LENGTH,0).freeze
+  
   attr_reader :values
   
   def initialize(values=nil)
     # A 64-element array that contains all the values for the pattern
-    @values = values ? values.to_a : Array.new(DEFAULT_LENGTH,0)    
+    @values = values ? values.to_a : Array.new(EMPTY)
     @length = @values.length
   end
     

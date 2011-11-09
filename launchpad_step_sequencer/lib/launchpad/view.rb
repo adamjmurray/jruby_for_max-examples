@@ -48,9 +48,14 @@ class Launchpad::View < Launchpad::Adapter
   
   def redraw_grid
     grid_values = @model.grid_values
-    @parameter_grid_values = grid_values if @model.patterns_screen_selected?
     @selected_grid_index = @model.selected_grid_index
-    grid grid_values.map.with_index{|value,index| color_value(color_for(value, index==@selected_grid_index)) } 
+    colors = if grid_values.is_a? Hash
+      @parameter_grid_values = grid_values      
+      Launchpad::Pattern::EMPTY.map.with_index{|c,index| color_for(grid_values[index] || c) }
+    else
+      grid_values.map.with_index{|value,index| color_for(value, index==@selected_grid_index) }     
+    end
+    grid colors 
   end
   
   def redraw_patterns_grid

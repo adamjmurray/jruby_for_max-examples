@@ -25,7 +25,13 @@ class Launchpad::Adapter
   # set the entire grid
   # colors should be an array of 64 color (velocity) values
   def grid colors
-    @grid_sender.call colors
+    pitch_velocity_pairs = colors.map.with_index do |color,index|       
+      x = (index % 8)
+      y = (index / 8)
+      c = color_value(color) 
+      [16*y + x, c]
+    end.flatten
+    @grid_sender.call pitch_velocity_pairs
   end
 
   def right index,color=3
